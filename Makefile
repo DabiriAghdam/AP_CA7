@@ -1,11 +1,11 @@
-CC := g++ -std=c++11 -Wall
+CC := g++ -std=c++11
 SRC_DIR = src
 BUILD_DIR = build
 EXECUTABLE_FILE = network.out
 OBJECTS = \
 	$(BUILD_DIR)/main.o \
 	$(BUILD_DIR)/network.o \
-	$(BUILD_DIR)/orders_handler.o \
+	$(BUILD_DIR)/commands_handler.o \
 	$(BUILD_DIR)/customer.o \
 	$(BUILD_DIR)/publisher.o \
 	$(BUILD_DIR)/film.o \
@@ -38,8 +38,8 @@ $(BUILD_DIR)/publisher.o: $(SRC_DIR)/publisher.cpp
 $(BUILD_DIR)/customer.o: $(SRC_DIR)/customer.cpp
 	$(CC) -c $(SRC_DIR)/customer.cpp -o $(BUILD_DIR)/customer.o
 
-$(BUILD_DIR)/orders_handler.o: $(SRC_DIR)/orders_handler.cpp
-	$(CC) -c $(SRC_DIR)/orders_handler.cpp -o $(BUILD_DIR)/orders_handler.o
+$(BUILD_DIR)/commands_handler.o: $(SRC_DIR)/commands_handler.cpp
+	$(CC) -c $(SRC_DIR)/commands_handler.cpp -o $(BUILD_DIR)/commands_handler.o
 
 $(BUILD_DIR)/network.o: $(SRC_DIR)/network.cpp
 	$(CC) -c $(SRC_DIR)/network.cpp -o $(BUILD_DIR)/network.o
