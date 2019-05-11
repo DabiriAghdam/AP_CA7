@@ -1,34 +1,49 @@
-CC := g++ -std=c++11
+CC := g++ -std=c++11 -Wall
+SRC_DIR = src
+BUILD_DIR = build
+EXECUTABLE_FILE = network.out
+OBJECTS = \
+	$(BUILD_DIR)/main.o \
+	$(BUILD_DIR)/network.o \
+	$(BUILD_DIR)/orders_handler.o \
+	$(BUILD_DIR)/customer.o \
+	$(BUILD_DIR)/publisher.o \
+	$(BUILD_DIR)/film.o \
+	$(BUILD_DIR)/comment.o \
+	$(BUILD_DIR)/notification.o \
 
-all: main.out
+all: $(BUILD_DIR) $(EXECUTABLE_FILE)
 
-main.out: main.o network.o orders_handler.o customer.o publisher.o film.o comment.o notification.o
-	$(CC) main.o network.o orders_handler.o customer.o publisher.o film.o comment.o notification.o -o main.out
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
-main.o: main.cpp
-	$(CC) -c main.cpp -o main.o
+$(EXECUTABLE_FILE): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $(EXECUTABLE_FILE)
 
-notification.o: notification.cpp
-	$(CC) -c notification.cpp -o notification.o
+$(BUILD_DIR)/main.o: $(SRC_DIR)/main.cpp
+	$(CC) -c $(SRC_DIR)/main.cpp -o $(BUILD_DIR)/main.o
 
-comment.o: comment.cpp
-	$(CC) -c comment.cpp -o comment.o
+$(BUILD_DIR)/notification.o: $(SRC_DIR)/notification.cpp
+	$(CC) -c $(SRC_DIR)/notification.cpp -o $(BUILD_DIR)/notification.o
 
-film.o: film.cpp
-	$(CC) -c film.cpp -o film.o
+$(BUILD_DIR)/comment.o: $(SRC_DIR)/comment.cpp
+	$(CC) -c $(SRC_DIR)/comment.cpp -o $(BUILD_DIR)/comment.o
 
-publisher.o: publisher.cpp
-	$(CC) -c publisher.cpp -o publisher.o
+$(BUILD_DIR)/film.o: $(SRC_DIR)/film.cpp
+	$(CC) -c $(SRC_DIR)/film.cpp -o $(BUILD_DIR)/film.o
 
-customer.o: customer.cpp
-	$(CC) -c customer.cpp -o customer.o
+$(BUILD_DIR)/publisher.o: $(SRC_DIR)/publisher.cpp
+	$(CC) -c $(SRC_DIR)/publisher.cpp -o $(BUILD_DIR)/publisher.o
 
-orders_handler.o: orders_handler.cpp
-	$(CC) -c orders_handler.cpp -o orders_handler.o
+$(BUILD_DIR)/customer.o: $(SRC_DIR)/customer.cpp
+	$(CC) -c $(SRC_DIR)/customer.cpp -o $(BUILD_DIR)/customer.o
 
-network.o: network.cpp
-	$(CC) -c network.cpp -o network.o
+$(BUILD_DIR)/orders_handler.o: $(SRC_DIR)/orders_handler.cpp
+	$(CC) -c $(SRC_DIR)/orders_handler.cpp -o $(BUILD_DIR)/orders_handler.o
+
+$(BUILD_DIR)/network.o: $(SRC_DIR)/network.cpp
+	$(CC) -c $(SRC_DIR)/network.cpp -o $(BUILD_DIR)/network.o
 
 .PHONY: clean
 clean:
-	rm -r *.o
+	rm -rf $(BUILD_DIR) *.o *.out
