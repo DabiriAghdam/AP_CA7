@@ -3,13 +3,14 @@
 
 #include "customer.h"
 #include "film.h"
-#include "orders_handler.h"
+#include "film_repository.h"
+#include "commands_handler.h"
 #include <vector>
 
 class Network {
 protected:
     std::vector<Customer> users;
-    std::vector<Film> films;
+    Film_Repository film_repository;
 };
 
 #endif

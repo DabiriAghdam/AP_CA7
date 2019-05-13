@@ -9,6 +9,7 @@ OBJECTS = \
 	$(BUILD_DIR)/customer.o \
 	$(BUILD_DIR)/publisher.o \
 	$(BUILD_DIR)/film.o \
+	$(BUILD_DIR)/film_repository.o \
 	$(BUILD_DIR)/comment.o \
 	$(BUILD_DIR)/notification.o \
 
@@ -28,6 +29,9 @@ $(BUILD_DIR)/notification.o: $(SRC_DIR)/notification.cpp
 
 $(BUILD_DIR)/comment.o: $(SRC_DIR)/comment.cpp
 	$(CC) -c $(SRC_DIR)/comment.cpp -o $(BUILD_DIR)/comment.o
+
+$(BUILD_DIR)/film_repository.o: $(SRC_DIR)/film_repository.cpp
+	$(CC) -c $(SRC_DIR)/film_repository.cpp -o $(BUILD_DIR)/film_repository.o
 
 $(BUILD_DIR)/film.o: $(SRC_DIR)/film.cpp
 	$(CC) -c $(SRC_DIR)/film.cpp -o $(BUILD_DIR)/film.o
