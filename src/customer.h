@@ -20,7 +20,8 @@ protected:
     std::vector<Notification> notifications; 
     // std::vector<Publisher*> following;
 public:
-
+    Customer(int _id, int _age, int _money, std::string _email, std::string _username, std::string _password);
+    void set_money(int value) {  money = value; }
 };
 
 #endif

@@ -11,7 +11,7 @@ protected:
     int year;
     int length;
     int price;
-    int score;
+    float score;
     std::string name;
     std::string summary;
     std::string director;

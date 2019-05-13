@@ -7,9 +7,10 @@
 
 class Publisher : public Customer {
 protected:
-    int revenue;
     std::vector<Customer*> followers;
     std::vector<Film*> published_films;
+public:
+    std::vector<Customer*> get_followers()  {   return followers;   }
 };
 
 #endif
