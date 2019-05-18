@@ -6,11 +6,11 @@
 
 class UserRepository {
 protected:
-     std::vector<Customer> users;
+     std::vector<Customer*> users;
 public:
     Customer* find(int customer_id);
     Customer* find(std::string username);
-    void add(Customer new_user);
+    void add(Customer* new_user);
     int get_users_count() { return users.size();    }    
 };
 
