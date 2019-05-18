@@ -4,15 +4,22 @@
 #include "exception.h"
 #include <map>
 
+#define OK "OK\n"
+#define POST "POST"
+#define PUT "PUT"
+#define DEL "DELETE"
+#define GET "GET"
+//login o ... ro ham define kon
+
 class Network;
 
-class Commands_Handler {
+class CommandsHandler {
 private:
     Network* net;
     void get_parameters(std::istringstream &line_stream, std::map<std::string, std::string> &params);
 public:
-    Commands_Handler(Network* _net);
-    void start();
+    CommandsHandler(Network* _net);
+    void run();
 };
 
 #endif
