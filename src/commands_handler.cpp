@@ -89,14 +89,30 @@ void CommandsHandler::run()
                        if (ok)
                         cout << OK;
                     }
-                    else
-                        throw Bad_Request_Ex();
+                    else if (method == GET)
+                    {
+                        if (parameters.find("film_id") == parameters.end())
+                        {
+                        // todo: search
+                        }
+                        else 
+                            net->get_details(stoi(parameters["film_id"]));
+                    }
+                    // else
+                    //     throw Bad_Request_Ex();
                     
                 }
                 else if (command == FOLLOWERS)
                 {
                     if (method == GET)
                         net->get_followers();
+                    else if (method == POST)
+                    {
+                        get_parameters(line_stream, parameters);    
+                        bool ok = net->follow(stoi(parameters["user_id"]));
+                        if (ok)
+                            cout << OK;
+                    }
                     else 
                         throw Bad_Request_Ex();
                 }
@@ -104,7 +120,12 @@ void CommandsHandler::run()
                 {
                     if (method == POST)
                     {
-                        bool ok = net->give_money();
+                        get_parameters(line_stream, parameters); 
+                        bool ok;
+                        if (parameters.find("amount") == parameters.end())
+                            ok = net->give_money();
+                        else
+                            ok = net->inc_money(stoi(parameters["amount"]));
                         if (ok)
                             cout << OK;
                     }
@@ -165,6 +186,10 @@ void CommandsHandler::run()
         catch (Exception &ex)
         {
             cout << ex.what();
+        }
+        catch (...)
+        {   
+            cout << "Unhandled exception occured!" << endl;//are?
         }
     }
 }

@@ -16,6 +16,7 @@ public:
         : Customer(_id, _age, _money, _email, _username, _password) {}
     virtual std::string get_type() {    return PUBLISHER;  }
     std::vector<Customer*> get_followers()  {   return followers;   }
+    void add_follower(Customer* follower);
 };
 
 #endif

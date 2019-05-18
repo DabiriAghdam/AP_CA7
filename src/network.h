@@ -33,6 +33,9 @@ public:
     FilmRepository* get_film_repository() { return &film_repository;    }
     void start();
     void get_followers();
+    bool follow(int publisher_id);
+    bool inc_money(int value);
+    void get_details(int film_id);
 };
 
 #endif

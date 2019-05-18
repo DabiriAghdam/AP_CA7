@@ -19,6 +19,8 @@ public:
     void add_reply(std::string content);
     Customer* get_author() {    return author;  }
     void unpublish()    {   published = false; }
+    std::string get_content() { return content; }
+    std::vector<std::string>* get_replies() {   return &replies; }
 };
 
 #endif

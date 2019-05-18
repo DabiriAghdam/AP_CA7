@@ -28,6 +28,15 @@ public:
     Publisher* get_publisher()  {   return  publisher;  }
     void unpublish() {  published = false;  }
     void delete_comment(int id);
+    std::string get_name()  {   return name;    }
+    std::string get_director()  {   return director;    }
+    std::string get_summary()  {   return summary;    }
+    int get_length()  {   return length;    }
+    int get_year()  {   return year;    }
+    float get_score() {  return score;   }
+    int get_price() {   return price;   }
+    std::vector<Comment>* get_comments()    {   return &comments;    }
+
 };
 
 #endif
