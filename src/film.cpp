@@ -15,3 +15,21 @@ Film::Film(int _id, int _year, int _length, int _price, string _name, string _su
     publisher = _publisher;
     published = true;
 }
+
+Comment* Film::get_comment(int id)
+{
+    for (int i = 0; i < comments.size(); i++)
+    {
+        if (comments[i].get_id() == id)
+            return &comments[i];
+    }
+    return NULL;
+}
+
+void Film::delete_comment(int id)
+{
+    Comment* comment = get_comment(id);
+    if (comment == NULL)
+        throw Not_Found_Ex();
+    comment->unpublish();
+}

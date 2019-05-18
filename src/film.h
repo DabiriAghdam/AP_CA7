@@ -2,6 +2,7 @@
 #define FILM_H
 
 #include "comment.h"
+#include "exception.h"
 #include <string>
 #include <vector>
 
@@ -22,9 +23,11 @@ protected:
     Publisher* publisher;   
 public:
     Film(int _id, int _year, int _length, int _price, std::string _name, std::string _summary, std::string _director, Publisher* _publisher);
+    Comment* get_comment(int id);
     int get_id()    {   return id; }
     Publisher* get_publisher()  {   return  publisher;  }
     void unpublish() {  published = false;  }
+    void delete_comment(int id);
 };
 
 #endif

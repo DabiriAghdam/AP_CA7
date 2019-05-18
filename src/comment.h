@@ -2,12 +2,23 @@
 #define COMMENT_H
 
 #include <string>
+#include <vector>
+
+class Customer;
 
 class Comment {
 protected:
     int id;
+    bool published;
+    Customer* author;
     std::string content;
-    std::string reply; // 1 done??
+    std::vector<std::string> replies;
+public:
+    Comment()   {   published = true;    }
+    int get_id() {  return id;  }
+    void add_reply(std::string content);
+    Customer* get_author() {    return author;  }
+    void unpublish()    {   published = false; }
 };
 
 #endif

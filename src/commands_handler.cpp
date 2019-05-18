@@ -22,13 +22,13 @@ void CommandsHandler::get_parameters(istringstream& line_stream, map<string, str
 
 void CommandsHandler::run()
 {
-    string line, method, command, question_mark, key, value;
+    string line;
     while(getline(cin, line))
     {
         try 
         {
+            string method, command, question_mark, key, value;
             map<string, string> parameters;
-            // parameters.erase(parameters.begin(), parameters.end());
             istringstream line_stream(line);
             while (line_stream >> method) 
             {
@@ -68,43 +68,81 @@ void CommandsHandler::run()
                 }
                 else if (command == FILMS)
                 {
+                    get_parameters(line_stream, parameters);
                     if(method == POST)
                     { 
-                        get_parameters(line_stream, parameters);
                         bool ok = net->add_film(stoi(parameters["year"]), 
                             stoi(parameters["length"]), stoi(parameters["price"]),parameters["name"],
                             parameters["summary"], parameters["director"]);
-                        if(ok)  
+                        if (ok)  
                             cout << OK;
                     }
                     else if (method == PUT)
                     {
-                        bool ok = net->edit_film(parameters);
-                        if(ok)  
-                            cout << OK;
+                        // bool ok = net->edit_film(parameters);
+                        // if(ok)  
+                        //     cout << OK;
                     }
-                    else if (method == DEL);
-                        // net->get_film_repository()->delete_film(stoi(parameters["film_id"]));
+                    else if (method == DEL)
+                    {
+                       bool ok = net->delete_film(stoi(parameters["film_id"]));
+                       if (ok)
+                        cout << OK;
+                    }
+                    else
+                        throw Bad_Request_Ex();
+                    
                 }
                 else if (command == FOLLOWERS)
                 {
-                    // net->get_logged_in_user()->get_followers();
+                    if (method == GET)
+                        net->get_followers();
+                    else 
+                        throw Bad_Request_Ex();
                 }
                 else if (command == MONEY)
                 {
+                    if (method == POST)
+                    {
+                        bool ok = net->give_money();
+                        if (ok)
+                            cout << OK;
+                    }
+                    else
+                        throw Bad_Request_Ex();
                     
                 }
                 else if (command == PUBLISHED)
-                {
-                    
+                {  
+                   //todo 
                 }
                 else if (command == REPLIES)
                 {
-                    
+                    if (method == POST)
+                    {
+                        get_parameters(line_stream, parameters);
+                        bool ok = net->reply(stoi(parameters["film_id"]), stoi(parameters["comment_id"]), parameters["content"]);                   
+                        if (ok)
+                            cout << OK;
+                    }
+                    else
+                        throw Bad_Request_Ex();
                 }
                 else if (command == COMMENTS)
                 {
-                    
+                    if (method == DEL)
+                    {
+                        get_parameters(line_stream, parameters);
+                        bool ok = net->delete_comment(stoi(parameters["film_id"]), stoi(parameters["comment_id"]));
+                        if (ok)
+                            cout << OK;                        
+                    }   
+                    else if (method == POST)
+                    {
+                        //todo
+                    }
+                    else 
+                        throw Bad_Request_Ex();
                 }
                 else if (command == BUY)
                 {
