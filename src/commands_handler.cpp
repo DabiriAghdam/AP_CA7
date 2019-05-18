@@ -38,7 +38,7 @@ void CommandsHandler::run()
                 }
                 line_stream >> command;
                 line_stream >> question_mark;
-                if (command == "signup")
+                if (command == SIGNUP)
                 {
                     if (method != POST)
                         throw Bad_Request_Ex();
@@ -57,7 +57,7 @@ void CommandsHandler::run()
                     if(ok)
                         cout << OK;
                 }
-                else if (command == "login")
+                else if (command == LOGIN)
                 {
                     if (method != POST)
                         throw Bad_Request_Ex();
@@ -66,7 +66,7 @@ void CommandsHandler::run()
                     if (ok) 
                         cout << OK;
                 }
-                else if (command == "films")
+                else if (command == FILMS)
                 {
                     if(method == POST)
                     { 
@@ -77,52 +77,48 @@ void CommandsHandler::run()
                         if(ok)  
                             cout << OK;
                     }
-                    else if (method == "PUT")
+                    else if (method == PUT)
                     {
                         bool ok = net->edit_film(parameters);
                         if(ok)  
                             cout << OK;
                     }
-                    else if (method == "DELETE");
+                    else if (method == DEL);
                         // net->get_film_repository()->delete_film(stoi(parameters["film_id"]));
                 }
-                else if (command == "followers")
+                else if (command == FOLLOWERS)
                 {
                     // net->get_logged_in_user()->get_followers();
                 }
-                else if (command == "money")
+                else if (command == MONEY)
                 {
                     
                 }
-                else if (command == "published")
+                else if (command == PUBLISHED)
                 {
                     
                 }
-                else if (command == "replies")
+                else if (command == REPLIES)
                 {
                     
                 }
-                else if (command == "comments")
+                else if (command == COMMENTS)
                 {
                     
                 }
-                else if (command == "buy")
+                else if (command == BUY)
                 {
                     
                 }
-                else if (command == "rate")
+                else if (command == RATE)
                 {
                     
                 }
-                else if (command == "purchased")
+                else if (command == PURCHASED)
                 {
                     
                 }
-                else if (command == "notifications")
-                {
-                    
-                }
-                else if (command == "rate")
+                else if (command == NOTIFICATIONS)
                 {
                     
                 }

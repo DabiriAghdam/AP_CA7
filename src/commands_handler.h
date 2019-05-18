@@ -9,7 +9,18 @@
 #define PUT "PUT"
 #define DEL "DELETE"
 #define GET "GET"
-//login o ... ro ham define kon
+#define LOGIN "login"
+#define SIGNUP "signup"
+#define FILMS "films"
+#define FOLLOWERS "followers"
+#define MONEY "money"
+#define PUBLISHED "published"
+#define REPLIES "replies"
+#define BUY "buy"
+#define COMMENTS "comments"
+#define RATE "rate"
+#define PURCHASED "purchased"
+#define NOTIFICATIONS "notifications"
 
 class Network;
 
