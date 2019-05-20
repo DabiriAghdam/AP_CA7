@@ -1,4 +1,5 @@
 #include "network.h"
+#include "md5.h"
 #include <iostream>
 
 using namespace std;
@@ -19,16 +20,17 @@ bool Network::signup(string email, string username, string password, int age, bo
     Customer* exist = user_repository.find(username);
     if (exist)
         throw Bad_Request_Ex();
+    string hashed_pass = md5(password);
     int id = user_repository.get_users_count() + 1;
     if (publisher)
     {
-        Publisher* new_user = new Publisher(id, age, 0, email, username, password);
+        Publisher* new_user = new Publisher(id, age, 0, email, username, hashed_pass);
         user_repository.add(new_user);
         publishers_revenue[id] = 0;
     }
     else 
     {
-        Customer* new_user = new Customer(id, age, 0, email, username, password);
+        Customer* new_user = new Customer(id, age, 0, email, username, hashed_pass);
         user_repository.add(new_user);
     }
     logged_in_user = user_repository.find(id);
@@ -38,7 +40,8 @@ bool Network::signup(string email, string username, string password, int age, bo
 bool Network::login(string username, string password)
 {
     Customer* user = user_repository.find(username);
-    if (user == NULL || user->get_password() != password)
+    string hashed_pass = md5(password);
+    if (user == NULL || user->get_password() != hashed_pass)
         throw Bad_Request_Ex();
     else 
         logged_in_user = user;
@@ -50,24 +53,48 @@ bool Network::add_film(int year, int length, int price, std::string name, std::s
     int id = film_repository.get_films_count() + 1;
     Film* new_film = new Film(id, year, length, price, name, summary, director, (Publisher*)logged_in_user);
     film_repository.add(new_film);
+    // (Publisher*)(logged_in_user)->notify_new_film(); //todo
     return true;
 }
 
-bool Network::delete_film(int id)
+bool Network::delete_film(int film_id)
 {
     check_user_access();
-    Film* film = film_repository.find(id);
+    Film* film = film_repository.find(film_id);
     if (film == NULL)
         throw Not_Found_Ex();
     else if (film->get_publisher() != (Publisher*)logged_in_user)
         throw Permission_Denied_Ex();
-    film_repository.remove(id);
+    film_repository.remove(film_id);
     return true;
 }
 
-bool Network::edit_film(map<string, string> parameters)
+void Network::edit_film(int film_id, map<string, string> parameters)
 {
-    //todo
+    check_user_access();
+    Film* film = film_repository.find(film_id);
+    if (film == NULL)
+        throw Not_Found_Ex();
+    else if (film->get_publisher() != (Publisher*)logged_in_user)
+        throw Permission_Denied_Ex();
+    for (map<string, string>::iterator it = parameters.begin(); it != parameters.end(); it++)
+    {
+        if (it->first == "name")
+            film->set_name(it->second);
+        else if (it->first == "year")
+            film->set_year(stoi(it->second));
+        else if (it->first == "length")
+            film->set_length(stoi(it->second));
+        else if (it->first == "summary")
+            film->set_summary(it->second);
+        else if (it->first == "director")
+            film->set_director(it->second);
+        else
+            throw Bad_Request_Ex(); //are?!
+
+        
+        
+    }
 }
 
 void Network::get_followers()
@@ -88,6 +115,7 @@ bool Network::give_money()
     int money = publishers_revenue[logged_in_user->get_id()];
     logged_in_user->inc_money(money);
     publishers_revenue[logged_in_user->get_id()] = 0;
+    revenue -= money;
     return true;
 }
 

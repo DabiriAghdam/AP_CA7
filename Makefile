@@ -1,4 +1,4 @@
-CC := g++ -std=c++11
+CC := g++ -std=c++11 -g
 SRC_DIR = src
 BUILD_DIR = build
 EXECUTABLE_FILE = network.out
@@ -13,6 +13,7 @@ OBJECTS = \
 	$(BUILD_DIR)/film_repository.o \
 	$(BUILD_DIR)/comment.o \
 	$(BUILD_DIR)/notification.o \
+	$(BUILD_DIR)/md5.o \
 
 all: $(BUILD_DIR) $(EXECUTABLE_FILE)
 
@@ -51,6 +52,9 @@ $(BUILD_DIR)/commands_handler.o: $(SRC_DIR)/commands_handler.cpp $(SRC_DIR)/comm
 
 $(BUILD_DIR)/network.o: $(SRC_DIR)/network.cpp $(SRC_DIR)/network.h
 	$(CC) -c $(SRC_DIR)/network.cpp -o $(BUILD_DIR)/network.o
+
+$(BUILD_DIR)/md5.o: $(SRC_DIR)/md5.cpp $(SRC_DIR)/md5.h
+	$(CC) -c $(SRC_DIR)/md5.cpp -o $(BUILD_DIR)/md5.o
 
 .PHONY: clean
 clean:
