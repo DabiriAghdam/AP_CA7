@@ -20,6 +20,7 @@ protected:
     CommandsHandler commands_handler;
 
     void check_user_access();
+    float get_percent(int film_id);
 public:
     Network();
     bool signup(std::string email, std::string username, std::string password, int age, bool publisher);
@@ -36,6 +37,8 @@ public:
     bool follow(int publisher_id);
     bool inc_money(int value);
     void get_details(int film_id);
+    void buy_film(int film_id);
+    void rate_film(int film_id, int score);
 };
 
 #endif

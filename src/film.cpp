@@ -12,6 +12,7 @@ Film::Film(int _id, int _year, int _length, int _price, string _name, string _su
     summary = _summary;
     director = _director;
     score = 0;
+    scores_count = 0;
     publisher = _publisher;
     published = true;
 }
@@ -32,4 +33,9 @@ void Film::delete_comment(int id)
     if (comment == NULL)
         throw Not_Found_Ex();
     comment->unpublish();
+}
+
+void Film::set_score(int score)
+{
+    score = float((score * scores_count) + score) / (scores_count + 1);
 }

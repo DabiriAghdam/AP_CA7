@@ -15,6 +15,7 @@ protected:
     int length;
     int price;
     float score;
+    int scores_count;
     bool published;
     std::string name;
     std::string summary;
@@ -35,8 +36,9 @@ public:
     int get_year()  {   return year;    }
     float get_score() {  return score;   }
     int get_price() {   return price;   }
-    std::vector<Comment>* get_comments()    {   return &comments;    }
-
+    std::vector<Comment>* get_all_comments()    {   return &comments;    }
+    Publisher* get_publisher()  {return publisher;  }
+    void set_score(int score);
 };
 
 #endif

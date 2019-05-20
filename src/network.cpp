@@ -48,7 +48,7 @@ bool Network::add_film(int year, int length, int price, std::string name, std::s
 {
     check_user_access();
     int id = film_repository.get_films_count() + 1;
-    Film new_film(id, year, length, price, name, summary, director, (Publisher*)logged_in_user);
+    Film* new_film = new Film(id, year, length, price, name, summary, director, (Publisher*)logged_in_user);
     film_repository.add(new_film);
     return true;
 }
@@ -148,6 +148,7 @@ void Network::get_details(int film_id) //are?
     
     if (film == NULL)
         throw Not_Found_Ex();
+    
     cout << "Details of Film " << film->get_name() << endl << "Id = " << film->get_id() << endl
      << "Director = " << film->get_director() << endl << "Length = " << film->get_length() << endl 
      << "Year = " << film->get_year() << endl << "Summary = " << film->get_summary() << endl
@@ -155,7 +156,7 @@ void Network::get_details(int film_id) //are?
 
     cout << "Comments" << endl << endl << "Recommendation Film" << endl 
         << " #. Film Id | Film Name | Film Length | Film Director" << endl;
-    vector<Comment>* comments  = film->get_comments();
+    vector<Comment>* comments  = film->get_all_comments();
     for (int i = 0; i < comments->size(); i++)
     {
         cout << (*comments)[i].get_id() << ". " << (*comments)[i].get_content() << endl;
@@ -171,4 +172,50 @@ void Network::get_details(int film_id) //are?
         //todo
         cout << i + 1 << ". 3 | film3 | 120 | director_of_film3" << endl;
     }
+}
+
+void Network::buy_film(int film_id)
+{
+    if (logged_in_user == NULL)
+        throw Permission_Denied_Ex();
+    Film* film = film_repository.find(film_id);
+    if (film == NULL)
+        throw Not_Found_Ex();
+    Publisher* publisher = film->get_publisher();
+    int price = film->get_price();
+    revenue += price;
+    float percent = get_percent(film_id);
+    publishers_revenue[publisher->get_id()] += price * percent;
+    logged_in_user->inc_money(-price);   
+    // ((Publisher*)publisher)->add_notification(); //todo
+}
+
+float Network::get_percent(int film_id)
+{
+    Film* film = film_repository.find(film_id);
+    if (film == NULL)
+        throw Not_Found_Ex();
+    Publisher* publisher = film->get_publisher();
+    int price = film->get_price();
+    float score = film->get_score();
+    if (score < 5)
+        return 0.8;
+    else if (score < 8)
+        return 0.9;
+    else 
+        return 0.95; 
+}
+
+void Network::rate_film(int film_id, int score)
+{
+    if (logged_in_user == NULL)
+        throw Permission_Denied_Ex();
+    Film* film = film_repository.find(film_id);
+    if (film == NULL)
+        throw Not_Found_Ex();
+    if (score > 10 || score < 1)  //are?
+        throw Bad_Request_Ex();
+
+    film->set_score(score);
+    // ((Publisher*)publisher)->add_notification(); //todo
 }
