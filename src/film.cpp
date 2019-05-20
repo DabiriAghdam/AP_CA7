@@ -21,8 +21,8 @@ Comment* Film::get_comment(int id)
 {
     for (int i = 0; i < comments.size(); i++)
     {
-        if (comments[i].get_id() == id)
-            return &comments[i];
+        if (comments[i]->get_id() == id)
+            return comments[i];
     }
     return NULL;
 }
@@ -38,4 +38,11 @@ void Film::delete_comment(int id)
 void Film::set_score(int score)
 {
     score = float((score * scores_count) + score) / (scores_count + 1);
+}
+
+void Film::add_comment(string content, Customer* author)
+{
+    int id = comments.size() + 1;
+    Comment* comment = new Comment(id, content, author);
+    comments.push_back(comment);
 }

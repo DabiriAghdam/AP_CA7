@@ -28,8 +28,9 @@ public:
     bool give_money();
     bool reply(int film_id, int comment_id, std::string content);
     bool delete_comment(int film_id, int comment_id);
-    bool delete_film(int id);
-    bool edit_film(std::map<std::string, std::string> parameters);
+    bool delete_film(int film_id);
+    void add_comment(int film_id, std::string);
+    void edit_film(int film_id, std::map<std::string, std::string> parameters);
     bool add_film(int year, int length, int price, std::string name, std::string summary, std::string director);
     FilmRepository* get_film_repository() { return &film_repository;    }
     void start();

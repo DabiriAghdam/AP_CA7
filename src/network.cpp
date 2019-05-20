@@ -90,10 +90,7 @@ void Network::edit_film(int film_id, map<string, string> parameters)
         else if (it->first == "director")
             film->set_director(it->second);
         else
-            throw Bad_Request_Ex(); //are?!
-
-        
-        
+            throw Bad_Request_Ex(); //are?!   
     }
 }
 
@@ -184,18 +181,18 @@ void Network::get_details(int film_id) //are?
 
     cout << "Comments" << endl << endl << "Recommendation Film" << endl 
         << " #. Film Id | Film Name | Film Length | Film Director" << endl;
-    vector<Comment>* comments  = film->get_all_comments();
-    for (int i = 0; i < comments->size(); i++)
+    vector<Comment*> comments  = film->get_all_comments();
+    for (int i = 0; i < comments.size(); i++)
     {
-        cout << (*comments)[i].get_id() << ". " << (*comments)[i].get_content() << endl;
-        vector<string>* replies = (*comments)[i].get_replies();
+        cout << comments[i]->get_id() << ". " << comments[i]->get_content() << endl;
+        vector<string>* replies = comments[i]->get_replies();
         for (int j = 0; j < replies->size(); j++)
-           cout << (*comments)[i].get_id() << '.' << i + 1 << ". " << (*replies)[j] << endl;
+           cout << comments[i]->get_id() << '.' << i + 1 << ". " << (*replies)[j] << endl;
     }
 
     cout << "Recommendation Film" << endl
          << "#. Film Id | Film Name | Film Length | Film Director" << endl;
-    for (int i = 0; i < comments->size(); i++)
+    for (int i = 0; i < comments.size(); i++)
     {
         //todo
         cout << i + 1 << ". 3 | film3 | 120 | director_of_film3" << endl;
@@ -246,4 +243,16 @@ void Network::rate_film(int film_id, int score)
 
     film->set_score(score);
     // ((Publisher*)publisher)->add_notification(); //todo
+}
+
+void Network::add_comment(int film_id, string content)
+{
+    if (logged_in_user == NULL)
+        throw Permission_Denied_Ex();
+    Film* film = logged_in_user->find_in_purchased_films(film_id);
+    if (film == NULL) //are?
+        throw Permission_Denied_Ex();
+    film->add_comment(content, logged_in_user);
+    // ((Publisher*)publisher)->add_notification(); //todo
+
 }

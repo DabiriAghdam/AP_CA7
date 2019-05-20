@@ -11,3 +11,13 @@ Customer::Customer(int _id,int _age, int _money, string _email, string _username
     username = _username;
     password = _password;
 }
+
+Film* Customer::find_in_purchased_films(int film_id)
+{
+    for (int i = 0; i < purchased_films.size(); i++)
+    {
+        if (purchased_films[i]->get_id() == film_id)
+            return purchased_films[i];
+    }
+    return NULL;
+}
