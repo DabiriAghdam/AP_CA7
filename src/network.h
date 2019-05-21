@@ -40,6 +40,9 @@ public:
     void get_details(int film_id);
     void buy_film(int film_id);
     void rate_film(int film_id, int score);
+    void find_films(std::map<std::string, std::string> filters);
+    void get_purchased_films(std::map<std::string, std::string> filters);
+    void get_published_films(std::map<std::string, std::string> filters);
 };
 
 #endif

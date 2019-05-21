@@ -1,6 +1,7 @@
 #include "network.h"
 #include "md5.h"
 #include <iostream>
+#include <regex>
 
 using namespace std;
 
@@ -15,11 +16,19 @@ void Network::start()
     commands_handler.run();
 }
 
+bool is_valid_email(const string& email)
+{
+   const std::regex pattern
+      ("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
+   return regex_match(email, pattern);
+}
+
 bool Network::signup(string email, string username, string password, int age, bool publisher)
 {
     Customer* exist = user_repository.find(username);
-    if (exist)
+    if (exist || !is_valid_email(email))
         throw Bad_Request_Ex();
+    
     string hashed_pass = md5(password);
     int id = user_repository.get_users_count() + 1;
     if (publisher)
@@ -77,7 +86,7 @@ void Network::edit_film(int film_id, map<string, string> parameters)
         throw Not_Found_Ex();
     else if (film->get_publisher() != (Publisher*)logged_in_user)
         throw Permission_Denied_Ex();
-    for (map<string, string>::iterator it = parameters.begin(); it != parameters.end(); it++)
+    for (map<string, string>::iterator it = parameters.begin(); it != parameters.end(); it++) //ok?
     {
         if (it->first == "name")
             film->set_name(it->second);
@@ -217,6 +226,7 @@ void Network::buy_film(int film_id)
 
 float Network::get_percent(int film_id)
 {
+    //define kon?!
     Film* film = film_repository.find(film_id);
     if (film == NULL)
         throw Not_Found_Ex();
@@ -254,5 +264,50 @@ void Network::add_comment(int film_id, string content)
         throw Permission_Denied_Ex();
     film->add_comment(content, logged_in_user);
     // ((Publisher*)publisher)->add_notification(); //todo
+}
 
+void Network::find_films(map<string, string> filters)
+{
+    if (logged_in_user == NULL)
+        throw Permission_Denied_Ex();
+
+    vector<Film*> result = film_repository.find(filters);
+    cout << "#. Film Id | Film Name | Film Length | Film price | Rate | Production Year | Film Director" << endl;
+    for (int i = 0; i < result.size(); i++)
+    {
+        cout << i + 1 << ". " << result[i]->get_id() << " | " << result[i]->get_name()
+            << " | " << result[i]->get_length() << " | " << result[i]->get_price()
+            << " | " << result[i]->get_score() << " | " << result[i]->get_year() 
+            << " | " << result[i]->get_director() << endl;
+    }
+}
+
+void Network::get_purchased_films(map<string, string> filters)
+{
+    if (logged_in_user == NULL)
+        throw Permission_Denied_Ex();
+
+    vector<Film*> result = logged_in_user->get_purchased_films(filters);
+    cout << "#. Film Id | Film Name | Film Length | Film price | Rate | Production Year | Film Director" << endl;
+    for (int i = 0; i < result.size(); i++)
+    {
+        cout << i + 1 << ". " << result[i]->get_id() << " | " << result[i]->get_name()
+            << " | " << result[i]->get_length() << " | " << result[i]->get_price()
+            << " | " << result[i]->get_score() << " | " << result[i]->get_year() 
+            << " | " << result[i]->get_director() << endl;
+    }
+}
+
+void Network::get_published_films(map<string, string> filters)
+{
+    check_user_access();
+    vector<Film*> result = logged_in_user->get_purchased_films(filters);
+    cout << "#. Film Id | Film Name | Film Length | Film price | Rate | Production Year | Film Director" << endl;
+    for (int i = 0; i < result.size(); i++)
+    {
+        cout << i + 1 << ". " << result[i]->get_id() << " | " << result[i]->get_name()
+            << " | " << result[i]->get_length() << " | " << result[i]->get_price()
+            << " | " << result[i]->get_score() << " | " << result[i]->get_year() 
+            << " | " << result[i]->get_director() << endl;
+    }
 }

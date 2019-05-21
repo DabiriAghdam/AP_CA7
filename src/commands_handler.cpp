@@ -22,6 +22,7 @@ void CommandsHandler::get_parameters(istringstream& line_stream, map<string, str
 
 void CommandsHandler::run()
 {
+    //beshkon b func haye riz tar ?!
     string line;
     while(getline(cin, line))
     {
@@ -87,7 +88,7 @@ void CommandsHandler::run()
                             net->get_details(stoi(parameters["film_id"]));
                         else 
                         {
-                        // todo: search
+                            net->find_films(parameters);
                         }
                     }
                 }
@@ -123,8 +124,14 @@ void CommandsHandler::run()
                     
                 }
                 else if (command == PUBLISHED)
-                {  
-                   //todo 
+                {
+                    if (method == GET)
+                    {
+                        get_parameters(line_stream, parameters);
+                        net->get_purchased_films(parameters);
+                    }
+                    else 
+                        throw Bad_Request_Ex();
                 }
                 else if (command == REPLIES)
                 {
@@ -175,13 +182,23 @@ void CommandsHandler::run()
                 }
                 else if (command == PURCHASED)
                 {
-                    //todo
+                    if (method == GET)
+                    {
+                    get_parameters(line_stream, parameters);
+                    net->get_purchased_films(parameters);
+                    }
+                    else 
+                        throw Bad_Request_Ex();
                 }
                 else if (command == NOTIFICATIONS)
                 {
                     //todo                    
                 }
             }
+        }
+        catch (invalid_argument &ia)
+        {
+            throw Bad_Request_Ex(); //ok?   
         }
         catch (Exception &ex)
         {

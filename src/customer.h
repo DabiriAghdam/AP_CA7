@@ -5,6 +5,7 @@
 #include "notification.h"
 #include <string>
 #include <vector>
+#include <map>
 
 #define CUSTOMER "Customer"
 
@@ -27,7 +28,7 @@ public:
     std::string get_password() {    return password;    }
     std::string get_email() {   return email;   }
     virtual std::string get_type() {    return CUSTOMER;  }
-    // std::vector<Film*> get_purchased_films() {  return purchased_films; }
+    std::vector<Film*> get_purchased_films(std::map<std::string, std::string> filters);
     Film* find_in_purchased_films(int film_id);
 
 };
