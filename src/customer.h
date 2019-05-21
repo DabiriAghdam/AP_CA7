@@ -30,7 +30,9 @@ public:
     std::vector<Film*> get_purchased_films(std::map<std::string, std::string> filters);
     Film* find_in_purchased_films(int film_id);
     void purchase_film(Film* film);
-
+    std::vector<Notification*> get_unread_notifications();
+    std::vector<Notification*> get_all_notifications();
+    void add_notification(std::string message);
 };
 
 #endif

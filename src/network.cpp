@@ -63,7 +63,7 @@ bool Network::add_film(int year, int length, int price, std::string name, std::s
     Film* new_film = new Film(id, year, length, price, name, summary, director, (Publisher*)logged_in_user);
     film_repository.add(new_film);
     ((Publisher*)logged_in_user)->add_film(new_film);
-    // ((Publisher*)logged_in_user)->notify_new_film(); //todo
+    ((Publisher*)logged_in_user)->notify_followers_new_film();
     return true;
 }
 
@@ -106,7 +106,7 @@ void Network::get_followers()
 {
     check_user_access();
     vector<Customer*> followers = ((Publisher*)logged_in_user)->get_followers();
-    cout << "List of followers" << endl << "#. User Id | User Username | User Email" << endl;
+    cout << "List of Followers" << endl << "#. User Id | User Username | User Email" << endl;
     for (int i = 0; i < followers.size(); i++)
     {
         cout << i + 1 << ". " << followers[i]->get_id() << " | " << followers[i]->get_username()
@@ -126,10 +126,8 @@ bool Network::give_money()
 
 void Network::check_user_access()
 {
-    if (logged_in_user == NULL)// || logged_in_user->get_type() == CUSTOMER)
+    if (logged_in_user == NULL || logged_in_user->get_type() == CUSTOMER)
         throw Permission_Denied_Ex();   
-    else if (logged_in_user->get_type() == CUSTOMER)
-        throw Permission_Denied_Ex();
 }
 
 bool Network::reply(int film_id, int comment_id, string content)
@@ -142,7 +140,11 @@ bool Network::reply(int film_id, int comment_id, string content)
     if (comment == NULL)
         throw Not_Found_Ex();
     comment->add_reply(content);
-    // author->add_notification(); //todo
+    Customer* author = comment->get_author();
+    stringstream msg;
+    msg << "Publisher " << logged_in_user->get_username() << " with id " 
+        << logged_in_user->get_id() << " reply to your comment.";
+    author->add_notification(msg.str());
     return true;
 }
 
@@ -164,7 +166,10 @@ bool Network::follow(int publisher_id)
     if (publisher == NULL)
         throw Not_Found_Ex();
     ((Publisher*)publisher)->add_follower(logged_in_user);
-    // ((Publisher*)publisher)->add_notification(); //todo
+    stringstream msg;
+    msg << "User " << logged_in_user->get_username() << " with id " 
+        << logged_in_user->get_id() << " follow you.";
+    publisher->add_notification(msg.str());
     return true;
 }
 bool Network::inc_money(int value)
@@ -175,7 +180,7 @@ bool Network::inc_money(int value)
     return true;
 }
 
-void Network::get_details(int film_id) //are?
+void Network::get_details(int film_id)
 {
     if (logged_in_user == NULL)
         throw Permission_Denied_Ex();
@@ -201,7 +206,7 @@ void Network::get_details(int film_id) //are?
 
     cout << endl << "Recommendation Film" << endl
          << "#. Film Id | Film Name | Film Length | Film Director" << endl;
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 1; i++)
     {
         //todo
         cout << i + 1 << ". 3 | film3 | 120 | director_of_film3" << endl;
@@ -223,7 +228,11 @@ void Network::buy_film(int film_id)
     float percent = get_percent(film_id);
     publishers_revenue[publisher->get_id()] += price * percent;
     logged_in_user->purchase_film(film);  
-    // ((Publisher*)publisher)->add_notification(); //todo
+    stringstream msg;
+    msg << "User " << logged_in_user->get_username() << " with id " 
+        << logged_in_user->get_id() << " buy your film " << film->get_name()
+        << " with id " << film->get_id() << '.';
+    publisher->add_notification(msg.str());
 }
 
 float Network::get_percent(int film_id)
@@ -255,7 +264,11 @@ void Network::rate_film(int film_id, int score)
         throw Bad_Request_Ex();
 
     film->set_score(score);
-    // ((Publisher*)publisher)->add_notification(); //todo
+    stringstream msg;
+    msg << "User " << logged_in_user->get_username() << " with id " 
+        << logged_in_user->get_id() << " rate your film " << film->get_name()
+        << " with id " << film->get_id() << '.';
+    film->get_publisher()->add_notification(msg.str());
 }
 
 void Network::add_comment(int film_id, string content)
@@ -266,7 +279,11 @@ void Network::add_comment(int film_id, string content)
     if (film == NULL) //are?
         throw Permission_Denied_Ex();
     film->add_comment(content, logged_in_user);
-    // ((Publisher*)publisher)->add_notification(); //todo
+    stringstream msg;
+    msg << "User " << logged_in_user->get_username() << " with id " 
+        << logged_in_user->get_id() << " comment on your film " << film->get_name()
+        << " with id " << film->get_id() << '.';
+    film->get_publisher()->add_notification(msg.str()); 
 }
 
 void Network::find_films(map<string, string> filters)
@@ -313,4 +330,32 @@ void Network::get_published_films(map<string, string> filters)
             << " | " << result[i]->get_score() << " | " << result[i]->get_year() 
             << " | " << result[i]->get_director() << endl;
     }
+}
+
+void Network::get_unread_notifications()
+{
+    if (logged_in_user == NULL)
+        throw Permission_Denied_Ex();
+
+    std::vector<Notification*> unreads = logged_in_user->get_unread_notifications();
+    cout << "#. Notification Message" << endl;
+    for (int i = unreads.size() - 1; i >= 0; i--) //are?
+    {
+        cout << unreads.size() - i << ". " << unreads[i]->get_message() << endl;
+        unreads[i]->is_read(true);
+    }
+}
+
+void Network::get_all_notifications(int limit)
+{
+    if (logged_in_user == NULL)
+        throw Permission_Denied_Ex();
+    
+    std::vector<Notification*> notifs = logged_in_user->get_all_notifications();
+    cout << "#. Notification Message" << endl;
+    for (int i = notifs.size() - 1; i >= 0; i--) //are?
+    {
+        cout << notifs.size() - i << ". " << notifs[i]->get_message() << endl;
+        notifs[i]->is_read(true);
+    }   
 }

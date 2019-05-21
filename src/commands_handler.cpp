@@ -189,8 +189,14 @@ void CommandsHandler::run()
                 }
                 else if (command == NOTIFICATIONS)
                 {
-                    //todo  
-                    cout << "Not implemented yet\n";                  
+                    if (question_mark == "read")
+                    {
+                        line_stream >> question_mark;
+                        get_parameters(line_stream, parameters);
+                        net->get_all_notifications(stoi(parameters.at("limit")));
+                    }
+                    else
+                       net->get_unread_notifications();
                 }
             }
         }

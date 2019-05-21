@@ -27,6 +27,8 @@ class Network;
 class CommandsHandler {
 private:
     Network* net;
+    
+    bool has_key(std::map<std::string, std::string> m, std::string key);
     void get_parameters(std::istringstream &line_stream, std::map<std::string, std::string> &params);
 public:
     CommandsHandler(Network* _net);

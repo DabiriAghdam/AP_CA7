@@ -24,50 +24,76 @@ Film* Customer::find_in_purchased_films(int film_id)
 
 vector<Film*> Customer::get_purchased_films(map<string, string> filters)
 {
-    vector<Film*> result = purchased_films;
+    vector<Film*> result;// = purchased_films;
     for (map<string, string>::iterator it = filters.begin(); it != filters.end(); it++)
     {
         if (it->first == "name")
         {
-            for (int i = 0; i < result.size(); i++)
-               if (result[i]->get_name() != it->second)
-                    result.erase(result.begin() + i);
+            for (int i = 0; i < purchased_films.size(); i++)
+               if (purchased_films[i]->get_name() == it->second)
+                    result.push_back(purchased_films[i]);
         }
         else if (it->first == "min_rate")
         {
             for (int i = 0; i < result.size(); i++)
-               if (result[i]->get_score() < stoi(it->second))
-                result.erase(result.begin() + i);
+               if (purchased_films[i]->get_score() >= stoi(it->second))
+                    result.push_back(purchased_films[i]);
         }
         else if (it->first == "min_year")
         {
             for (int i = 0; i < result.size(); i++)
-               if (result[i]->get_year() < stoi(it->second))
-                result.erase(result.begin() + i);
+               if (purchased_films[i]->get_year() >= stoi(it->second))
+                    result.push_back(purchased_films[i]);
         }
         else if (it->first == "max_year")
         {
             for (int i = 0; i < result.size(); i++)
-               if (result[i]->get_year() > stoi(it->second))
-                result.erase(result.begin() + i);
+               if (purchased_films[i]->get_year() <= stoi(it->second))
+                    result.push_back(purchased_films[i]);
         }
         else if (it->first == "price")
         {
             for (int i = 0; i < result.size(); i++)
-               if (result[i]->get_price() > stoi(it->second))
-                result.erase(result.begin() + i);
+               if (purchased_films[i]->get_price() == stoi(it->second))
+                    result.push_back(purchased_films[i]);
         }
         else if (it->first == "director")
         {
             for (int i = 0; i < result.size(); i++)
-               if (result[i]->get_director() != it->second)
-                    result.erase(result.begin() + i);
+               if (purchased_films[i]->get_director() == it->second)
+                    result.push_back(purchased_films[i]);
         }
     }
+    if (result.empty()) 
+        result = purchased_films;
     return result;
 }
 
 void Customer::purchase_film(Film* film)
 {
     purchased_films.push_back(film);
+}
+
+std::vector<Notification*> Customer::get_unread_notifications()
+{
+    std::vector<Notification*> result;
+    for (int i = 0; i < notifications.size(); i++)
+        if (!notifications[i]->get_read())
+            result.push_back(notifications[i]);
+    return result;
+}
+
+std::vector<Notification*> Customer::get_all_notifications()
+{
+    std::vector<Notification*> result = notifications;
+    for (int i = 0; i < result.size(); i++)
+        if (!result[i]->get_read())
+            result.erase(result.begin() + i);
+    return result;
+}
+
+void Customer::add_notification(std::string message)
+{
+    Notification* notification = new Notification(message);
+    notifications.push_back(notification);
 }

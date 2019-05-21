@@ -1,4 +1,5 @@
 #include "publisher.h"
+#include <sstream>
 
 using namespace std;
 
@@ -57,4 +58,12 @@ vector<Film*> Publisher::get_published_films(map<string, string> filters)
         //     throw Bad_Request_Ex(); //are?!   
     }
     return result;
+}
+
+void Publisher::notify_followers_new_film()
+{
+    stringstream msg;
+    msg << "Publisher " << username << " with id " << id << " register new film.";
+    for (int i = 0; i < followers.size(); i++)
+        followers[i]->add_notification(msg.str());
 }

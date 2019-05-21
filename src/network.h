@@ -24,7 +24,7 @@ protected:
 public:
     Network();
     bool signup(std::string email, std::string username, std::string password, int age, bool publisher);
-    bool login(std::string username, std::string password);
+    void login(std::string username, std::string password);
     bool give_money();
     bool reply(int film_id, int comment_id, std::string content);
     bool delete_comment(int film_id, int comment_id);
@@ -43,6 +43,8 @@ public:
     void find_films(std::map<std::string, std::string> filters);
     void get_purchased_films(std::map<std::string, std::string> filters);
     void get_published_films(std::map<std::string, std::string> filters);
+    void get_unread_notifications();
+    void get_all_notifications(int limit);
 };
 
 #endif
