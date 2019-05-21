@@ -17,6 +17,9 @@ Film* FilmRepository::find(int film_id)
 vector<Film*> FilmRepository::find(map<string, string> filters)
 {
     vector<Film*> result = films;
+    for (int i = 0; i < result.size(); i++)
+        if (!result[i]->is_published())
+                result.erase(result.begin() + i);
     for (map<string, string>::iterator it = filters.begin(); it != filters.end(); it++)
     {
         if (it->first == "name")
@@ -55,12 +58,11 @@ vector<Film*> FilmRepository::find(map<string, string> filters)
                if (result[i]->get_director() != it->second)
                     result.erase(result.begin() + i);
         }
-        else
-            throw Bad_Request_Ex(); //are?!   
+        // else
+        //     throw Bad_Request_Ex(); //are?!   
     }
     return result;
 }
-
 
 void FilmRepository::remove(int film_id)
 {

@@ -63,8 +63,11 @@ vector<Film*> Customer::get_purchased_films(map<string, string> filters)
                if (result[i]->get_director() != it->second)
                     result.erase(result.begin() + i);
         }
-        else
-            throw Bad_Request_Ex(); //are?!   
     }
     return result;
+}
+
+void Customer::purchase_film(Film* film)
+{
+    purchased_films.push_back(film);
 }

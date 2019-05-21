@@ -47,7 +47,7 @@ void CommandsHandler::run()
                     bool publisher = false;
                     if (has_key(parameters, "publisher") && parameters["publisher"] == "true")
                         publisher = true;
-                    bool ok = net->signup(parameters["email"], parameters["username"], parameters["password"], stoi(parameters["age"]), publisher);  
+                    bool ok = net->signup(parameters.at("email"), parameters.at("username"), parameters.at("password"), stoi(parameters.at("age")), publisher);  
                     if(ok)
                         cout << OK;
                 }
@@ -56,40 +56,37 @@ void CommandsHandler::run()
                     if (method != POST)
                         throw Bad_Request_Ex();
                     get_parameters(line_stream, parameters);
-                    bool ok = net->login(parameters["username"], parameters["password"]);
-                    if (ok) 
-                        cout << OK;
+                    net->login(parameters.at("username"), parameters.at("password"));
+                    cout << OK;
                 }
                 else if (command == FILMS)
                 {
                     get_parameters(line_stream, parameters);
                     if(method == POST)
                     { 
-                        bool ok = net->add_film(stoi(parameters["year"]), 
-                            stoi(parameters["length"]), stoi(parameters["price"]),parameters["name"],
-                            parameters["summary"], parameters["director"]);
+                        bool ok = net->add_film(stoi(parameters.at("year")), 
+                            stoi(parameters.at("length")), stoi(parameters.at("price")),parameters.at("name"),
+                            parameters.at("summary"), parameters.at("director"));
                         if (ok)  
                             cout << OK;
                     }
                     else if (method == PUT)
                     {
-                        net->edit_film(stoi(parameters["film_id"]), parameters);
+                        net->edit_film(stoi(parameters.at("film_id")), parameters);
                         cout << OK;
                     }
                     else if (method == DEL)
                     {
-                       bool ok = net->delete_film(stoi(parameters["film_id"]));
+                       bool ok = net->delete_film(stoi(parameters.at("film_id")));
                        if (ok)
                         cout << OK;
                     }
                     else if (method == GET)
                     {
                         if (has_key(parameters, "film_id"))
-                            net->get_details(stoi(parameters["film_id"]));
+                            net->get_details(stoi(parameters.at("film_id")));
                         else 
-                        {
                             net->find_films(parameters);
-                        }
                     }
                 }
                 else if (command == FOLLOWERS)
@@ -99,7 +96,7 @@ void CommandsHandler::run()
                     else if (method == POST)
                     {
                         get_parameters(line_stream, parameters);    
-                        bool ok = net->follow(stoi(parameters["user_id"]));
+                        bool ok = net->follow(stoi(parameters.at("user_id")));
                         if (ok)
                             cout << OK;
                     }
@@ -113,7 +110,7 @@ void CommandsHandler::run()
                         get_parameters(line_stream, parameters); 
                         bool ok;
                         if (has_key(parameters, "amount"))
-                            ok = net->inc_money(stoi(parameters["amount"]));
+                            ok = net->inc_money(stoi(parameters.at("amount")));
                         else
                             ok = net->give_money();
                         if (ok)
@@ -128,7 +125,7 @@ void CommandsHandler::run()
                     if (method == GET)
                     {
                         get_parameters(line_stream, parameters);
-                        net->get_purchased_films(parameters);
+                        net->get_published_films(parameters);
                     }
                     else 
                         throw Bad_Request_Ex();
@@ -138,7 +135,7 @@ void CommandsHandler::run()
                     if (method == POST)
                     {
                         get_parameters(line_stream, parameters);
-                        bool ok = net->reply(stoi(parameters["film_id"]), stoi(parameters["comment_id"]), parameters["content"]);                   
+                        bool ok = net->reply(stoi(parameters.at("film_id")), stoi(parameters.at("comment_id")), parameters.at("content"));                   
                         if (ok)
                             cout << OK;
                     }
@@ -150,14 +147,14 @@ void CommandsHandler::run()
                     if (method == DEL)
                     {
                         get_parameters(line_stream, parameters);
-                        bool ok = net->delete_comment(stoi(parameters["film_id"]), stoi(parameters["comment_id"]));
+                        bool ok = net->delete_comment(stoi(parameters.at("film_id")), stoi(parameters.at("comment_id")));
                         if (ok)
                             cout << OK;                        
                     }   
                     else if (method == POST)
                     {
                         get_parameters(line_stream, parameters);
-                        net->add_comment(stoi(parameters["film_id"]), parameters["content"]);
+                        net->add_comment(stoi(parameters.at("film_id")), parameters.at("content"));
                         cout << OK;                                           
                     }
                     else 
@@ -168,7 +165,7 @@ void CommandsHandler::run()
                     if (method == POST)
                     {
                         get_parameters(line_stream, parameters);
-                        net->buy_film(stoi(parameters["film_id"]));                    
+                        net->buy_film(stoi(parameters.at("film_id")));                    
                         cout << OK;
                     }
                     else 
@@ -177,7 +174,7 @@ void CommandsHandler::run()
                 else if (command == RATE)
                 {
                     get_parameters(line_stream, parameters);
-                    net->rate_film(stoi(parameters["film_id"]), stoi(parameters["score"]));
+                    net->rate_film(stoi(parameters.at("film_id")), stoi(parameters.at("score")));
                     cout << OK;                    
                 }
                 else if (command == PURCHASED)
@@ -192,13 +189,20 @@ void CommandsHandler::run()
                 }
                 else if (command == NOTIFICATIONS)
                 {
-                    //todo                    
+                    //todo  
+                    cout << "Not implemented yet\n";                  
                 }
             }
         }
         catch (invalid_argument &ia)
         {
-            throw Bad_Request_Ex(); //ok?   
+            cout << "Bad Request\n";
+            // throw Bad_Request_Ex(); //ok?   
+        }
+        catch (out_of_range &ia)
+        {
+            cout << "Bad Request\n";
+            // throw Bad_Request_Ex(); //ok?   
         }
         catch (Exception &ex)
         {

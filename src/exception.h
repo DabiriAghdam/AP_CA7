@@ -5,7 +5,7 @@
 
 class Exception {
 public:
-    std::string what() {}
+    virtual std::string what() {}
 };
 
 class Not_Found_Ex : public Exception {

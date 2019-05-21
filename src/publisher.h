@@ -17,6 +17,8 @@ public:
     virtual std::string get_type() {    return PUBLISHER;  }
     std::vector<Customer*> get_followers()  {   return followers;   }
     void add_follower(Customer* follower);
+    std::vector<Film*> get_published_films(std::map<std::string, std::string> filters);
+    void add_film(Film* film);
 };
 
 #endif

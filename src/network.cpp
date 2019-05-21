@@ -46,7 +46,7 @@ bool Network::signup(string email, string username, string password, int age, bo
     return true;
 }
 
-bool Network::login(string username, string password)
+void Network::login(string username, string password)
 {
     Customer* user = user_repository.find(username);
     string hashed_pass = md5(password);
@@ -62,7 +62,8 @@ bool Network::add_film(int year, int length, int price, std::string name, std::s
     int id = film_repository.get_films_count() + 1;
     Film* new_film = new Film(id, year, length, price, name, summary, director, (Publisher*)logged_in_user);
     film_repository.add(new_film);
-    // (Publisher*)(logged_in_user)->notify_new_film(); //todo
+    ((Publisher*)logged_in_user)->add_film(new_film);
+    // ((Publisher*)logged_in_user)->notify_new_film(); //todo
     return true;
 }
 
@@ -98,8 +99,6 @@ void Network::edit_film(int film_id, map<string, string> parameters)
             film->set_summary(it->second);
         else if (it->first == "director")
             film->set_director(it->second);
-        else
-            throw Bad_Request_Ex(); //are?!   
     }
 }
 
@@ -127,8 +126,10 @@ bool Network::give_money()
 
 void Network::check_user_access()
 {
-    if (logged_in_user == NULL || logged_in_user->get_type() == CUSTOMER)
+    if (logged_in_user == NULL)// || logged_in_user->get_type() == CUSTOMER)
         throw Permission_Denied_Ex();   
+    else if (logged_in_user->get_type() == CUSTOMER)
+        throw Permission_Denied_Ex();
 }
 
 bool Network::reply(int film_id, int comment_id, string content)
@@ -180,7 +181,7 @@ void Network::get_details(int film_id) //are?
         throw Permission_Denied_Ex();
     Film* film = film_repository.find(film_id);
     
-    if (film == NULL)
+    if (film == NULL || !film->is_published())
         throw Not_Found_Ex();
     
     cout << "Details of Film " << film->get_name() << endl << "Id = " << film->get_id() << endl
@@ -188,8 +189,7 @@ void Network::get_details(int film_id) //are?
      << "Year = " << film->get_year() << endl << "Summary = " << film->get_summary() << endl
      << "Rate = " << film->get_score() << endl << "Price = " << film->get_price() << endl << endl;
 
-    cout << "Comments" << endl << endl << "Recommendation Film" << endl 
-        << " #. Film Id | Film Name | Film Length | Film Director" << endl;
+    cout << endl << "Comments" << endl;
     vector<Comment*> comments  = film->get_all_comments();
     for (int i = 0; i < comments.size(); i++)
     {
@@ -199,9 +199,9 @@ void Network::get_details(int film_id) //are?
            cout << comments[i]->get_id() << '.' << i + 1 << ". " << (*replies)[j] << endl;
     }
 
-    cout << "Recommendation Film" << endl
+    cout << endl << "Recommendation Film" << endl
          << "#. Film Id | Film Name | Film Length | Film Director" << endl;
-    for (int i = 0; i < comments.size(); i++)
+    for (int i = 0; i < 3; i++)
     {
         //todo
         cout << i + 1 << ". 3 | film3 | 120 | director_of_film3" << endl;
@@ -215,12 +215,14 @@ void Network::buy_film(int film_id)
     Film* film = film_repository.find(film_id);
     if (film == NULL)
         throw Not_Found_Ex();
+    //todo : bokon to y tabe dg?!
     Publisher* publisher = film->get_publisher();
     int price = film->get_price();
     revenue += price;
+    logged_in_user->inc_money(-price); 
     float percent = get_percent(film_id);
     publishers_revenue[publisher->get_id()] += price * percent;
-    logged_in_user->inc_money(-price);   
+    logged_in_user->purchase_film(film);  
     // ((Publisher*)publisher)->add_notification(); //todo
 }
 
@@ -245,9 +247,10 @@ void Network::rate_film(int film_id, int score)
 {
     if (logged_in_user == NULL)
         throw Permission_Denied_Ex();
-    Film* film = film_repository.find(film_id);
+    Film* film = logged_in_user->find_in_purchased_films(film_id);
     if (film == NULL)
-        throw Not_Found_Ex();
+        throw Permission_Denied_Ex(); //are?
+        // throw Not_Found_Ex();
     if (score > 10 || score < 1)  //are?
         throw Bad_Request_Ex();
 
@@ -301,7 +304,7 @@ void Network::get_purchased_films(map<string, string> filters)
 void Network::get_published_films(map<string, string> filters)
 {
     check_user_access();
-    vector<Film*> result = logged_in_user->get_purchased_films(filters);
+    vector<Film*> result = ((Publisher*)logged_in_user)->get_published_films(filters);
     cout << "#. Film Id | Film Name | Film Length | Film price | Rate | Production Year | Film Director" << endl;
     for (int i = 0; i < result.size(); i++)
     {

@@ -44,6 +44,7 @@ public:
     void set_length(int _length) { length = _length;    }
     void set_summary(std::string _summary) {  summary = _summary;  }
     void set_director(std::string _director) {  director = _director;   }
+    bool is_published() {   return published;   }
 };
 
 #endif

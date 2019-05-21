@@ -19,7 +19,6 @@ protected:
     std::string password;
     std::vector<Film*>  purchased_films;
     std::vector<Notification*> notifications; 
-    // std::vector<Publisher*> following;
 public:
     Customer(int _id, int _age, int _money, std::string _email, std::string _username, std::string _password);
     void inc_money(int value) {  money += value; }
@@ -30,6 +29,7 @@ public:
     virtual std::string get_type() {    return CUSTOMER;  }
     std::vector<Film*> get_purchased_films(std::map<std::string, std::string> filters);
     Film* find_in_purchased_films(int film_id);
+    void purchase_film(Film* film);
 
 };
 
