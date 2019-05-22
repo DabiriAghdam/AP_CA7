@@ -1,6 +1,7 @@
 #include "network.h"
 #include "md5.h"
 #include <iostream>
+#include <iomanip> 
 #include <regex>
 
 using namespace std;
@@ -18,8 +19,7 @@ void Network::start()
 
 bool is_valid_email(const string& email)
 {
-   const std::regex pattern
-      ("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
+   const regex pattern ("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
    return regex_match(email, pattern);
 }
 
@@ -185,14 +185,13 @@ void Network::get_details(int film_id)
     if (logged_in_user == NULL)
         throw Permission_Denied_Ex();
     Film* film = film_repository.find(film_id);
-    
     if (film == NULL || !film->is_published())
         throw Not_Found_Ex();
     
     cout << "Details of Film " << film->get_name() << endl << "Id = " << film->get_id() << endl
      << "Director = " << film->get_director() << endl << "Length = " << film->get_length() << endl 
      << "Year = " << film->get_year() << endl << "Summary = " << film->get_summary() << endl
-     << "Rate = " << film->get_score() << endl << "Price = " << film->get_price() << endl << endl;
+     << "Rate = "<< setprecision(2) << film->get_score() << endl << "Price = " << film->get_price() << endl;
 
     cout << endl << "Comments" << endl;
     vector<Comment*> comments  = film->get_all_comments();
@@ -203,13 +202,14 @@ void Network::get_details(int film_id)
         for (int j = 0; j < replies->size(); j++)
            cout << comments[i]->get_id() << '.' << i + 1 << ". " << (*replies)[j] << endl;
     }
-
+    map<string, string> filters;
+    vector<Film*> recommended = film_repository.get_recommendation(film, logged_in_user);
     cout << endl << "Recommendation Film" << endl
          << "#. Film Id | Film Name | Film Length | Film Director" << endl;
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < recommended.size(); i++)
     {
-        //todo
-        cout << i + 1 << ". 3 | film3 | 120 | director_of_film3" << endl;
+        cout << i + 1 << ". " << recommended[i]->get_id() << " | " << recommended[i]->get_name()
+            << " | " << recommended[i]->get_length() << " | " << recommended[i]->get_director() << endl;
     }
 }
 
@@ -259,7 +259,6 @@ void Network::rate_film(int film_id, int score)
     Film* film = logged_in_user->find_in_purchased_films(film_id);
     if (film == NULL)
         throw Permission_Denied_Ex(); //are?
-        // throw Not_Found_Ex();
     if (score > 10 || score < 1)  //are?
         throw Bad_Request_Ex();
 
@@ -297,7 +296,7 @@ void Network::find_films(map<string, string> filters)
     {
         cout << i + 1 << ". " << result[i]->get_id() << " | " << result[i]->get_name()
             << " | " << result[i]->get_length() << " | " << result[i]->get_price()
-            << " | " << result[i]->get_score() << " | " << result[i]->get_year() 
+            << " | "<< setprecision(2) << result[i]->get_score() << " | " << result[i]->get_year() 
             << " | " << result[i]->get_director() << endl;
     }
 }
@@ -313,7 +312,7 @@ void Network::get_purchased_films(map<string, string> filters)
     {
         cout << i + 1 << ". " << result[i]->get_id() << " | " << result[i]->get_name()
             << " | " << result[i]->get_length() << " | " << result[i]->get_price()
-            << " | " << result[i]->get_score() << " | " << result[i]->get_year() 
+            << " | "<< setprecision(2) << result[i]->get_score() << " | " << result[i]->get_year() 
             << " | " << result[i]->get_director() << endl;
     }
 }
@@ -327,7 +326,7 @@ void Network::get_published_films(map<string, string> filters)
     {
         cout << i + 1 << ". " << result[i]->get_id() << " | " << result[i]->get_name()
             << " | " << result[i]->get_length() << " | " << result[i]->get_price()
-            << " | " << result[i]->get_score() << " | " << result[i]->get_year() 
+            << " | " << setprecision(2) << result[i]->get_score() << " | " << result[i]->get_year() 
             << " | " << result[i]->get_director() << endl;
     }
 }
@@ -353,9 +352,10 @@ void Network::get_all_notifications(int limit)
     
     std::vector<Notification*> notifs = logged_in_user->get_all_notifications();
     cout << "#. Notification Message" << endl;
-    for (int i = notifs.size() - 1; i >= 0; i--) //are?
+    for (int i = notifs.size() - 1; i >= 0 && limit > 0; i--) //are?
     {
         cout << notifs.size() - i << ". " << notifs[i]->get_message() << endl;
         notifs[i]->is_read(true);
+        limit--;
     }   
 }

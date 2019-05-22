@@ -38,7 +38,7 @@ public:
     float get_score() {  return score;   }
     int get_price() {   return price;   }
     Publisher* get_publisher()  {   return publisher;  }
-    void set_score(int score);
+    void set_score(int _score);
     void set_name(std::string _name) {   name = _name;  }
     void set_year(int _year) { year = _year;    }
     void set_length(int _length) { length = _length;    }

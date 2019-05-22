@@ -35,9 +35,10 @@ void Film::delete_comment(int id)
     comment->unpublish();
 }
 
-void Film::set_score(int score)
+void Film::set_score(int _score)
 {
-    score = float((score * scores_count) + score) / (scores_count + 1);
+    score = float((score * scores_count) + _score) / (scores_count + 1);
+    scores_count++;
 }
 
 void Film::add_comment(string content, Customer* author)
