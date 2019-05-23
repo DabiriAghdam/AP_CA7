@@ -6,6 +6,11 @@
 
 using namespace std;
 
+bool is_valid_email(const string& email)
+{
+   const regex pattern ("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
+   return regex_match(email, pattern);
+}
 Network::Network() : commands_handler(this) 
 { 
     revenue = 0;
@@ -17,16 +22,21 @@ void Network::start()
     commands_handler.run();
 }
 
-bool is_valid_email(const string& email)
+bool Network::logged_in()
 {
-   const regex pattern ("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
-   return regex_match(email, pattern);
+    return logged_in_user != NULL;
+}
+
+void Network::logout()
+{
+    check_logged_in();
+    logged_in_user = NULL;
 }
 
 void Network::signup(string email, string username, string password, int age, bool publisher)
 {
     Customer* exist = user_repository.find(username);
-    if (exist || !is_valid_email(email))
+    if (logged_in() || exist || !is_valid_email(email))
         throw Bad_Request_Ex();
     
     string hashed_pass = md5(password);
@@ -49,7 +59,7 @@ void Network::login(string username, string password)
 {
     Customer* user = user_repository.find(username);
     string hashed_pass = md5(password);
-    if (user == NULL || user->get_password() != hashed_pass)
+    if (logged_in() || user == NULL || user->get_password() != hashed_pass)
         throw Bad_Request_Ex();
     else 
         logged_in_user = user;
@@ -117,7 +127,7 @@ void Network::get_followers()
     }
 }
 
-void Network::get_money()
+void Network::give_money()
 {
     check_logged_in();
     check_user_access();
@@ -125,6 +135,13 @@ void Network::get_money()
     logged_in_user->inc_money(money);
     publishers_revenue[logged_in_user->get_id()] = 0;
     revenue -= money;
+}
+
+void Network::get_money()
+{
+    //publisher ghabl az tasfie hesab k nemikhad neshon bedim?!
+    check_logged_in();
+    cout << logged_in_user->get_money() << endl;
 }
 
 void Network::check_logged_in()

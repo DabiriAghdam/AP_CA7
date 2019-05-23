@@ -15,6 +15,12 @@ CommandsHandler::CommandsHandler(Network* _net)
     net = _net;
 }
 
+void CommandsHandler::logout()
+{
+    net->logout();
+    cout << OK;
+}
+
 void CommandsHandler::signup(map<string, string> parameters)
 {
     bool publisher = false;
@@ -68,7 +74,7 @@ void CommandsHandler::money(map<string, string> parameters)
     if (has_key(parameters, "amount"))
         net->inc_money(stoi(parameters.at("amount")));
     else
-        net->get_money();
+        net->give_money();
     cout << OK;
 }
 
@@ -128,7 +134,14 @@ void CommandsHandler::run()
                     throw Bad_Request_Ex();
                 line_stream >> command;
                 line_stream >> question_mark;
-                if (command == SIGNUP)
+                if (command == LOGOUT)
+                {
+                    if (method == POST)
+                        logout();
+                    else
+                        throw Bad_Request_Ex();
+                }
+                else if (command == SIGNUP)
                 {
                     if (method == POST)
                     {
@@ -148,12 +161,17 @@ void CommandsHandler::run()
                     else
                        throw Bad_Request_Ex();
                 }
-                else if (command == ADD_FILM)
+                else if (command == FILM)
                 {
                     if(method == POST)
                     {
                         get_parameters(line_stream, parameters);
                         add_film(parameters);   
+                    }
+                    else if (method == GET)
+                    {
+                        get_parameters(line_stream, parameters);
+                        get_film(parameters);                        
                     }
                     else
                         throw Bad_Request_Ex();
@@ -197,6 +215,8 @@ void CommandsHandler::run()
                         get_parameters(line_stream, parameters); 
                         money(parameters);
                     }
+                    else if (method == GET)
+                        net->get_money();
                     else
                         throw Bad_Request_Ex();
                 }

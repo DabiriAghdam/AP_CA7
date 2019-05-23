@@ -9,9 +9,10 @@
 #define PUT "PUT"
 #define DEL "DELETE"
 #define GET "GET"
+#define LOGOUT "logout"
 #define LOGIN "login"
 #define SIGNUP "signup"
-#define ADD_FILM "films"
+#define FILM "films"
 #define EDIT_FILM "put_films"
 #define DELETE_FILM "delete_films"
 #define FOLLOWERS "followers"
@@ -33,6 +34,7 @@ private:
     Network* net;
     
     void get_parameters(std::istringstream &line_stream, std::map<std::string, std::string> &params);
+    void logout();
     void signup(std::map<std::string, std::string> parameters);
     void login(std::map<std::string, std::string> parameters);
     void add_film(std::map<std::string, std::string> parameters);

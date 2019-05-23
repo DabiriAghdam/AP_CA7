@@ -27,10 +27,13 @@ protected:
     void print_film_details(Film* film);
     void print_film_comments(Film* film);
     void print_recommended_films(Film* film);
+    bool logged_in();
 public:
     Network();
+    void logout();
     void signup(std::string email, std::string username, std::string password, int age, bool publisher);
     void login(std::string username, std::string password);
+    void give_money();
     void get_money();
     void reply(int film_id, int comment_id, std::string content);
     void delete_comment(int film_id, int comment_id);
