@@ -130,29 +130,53 @@ void CommandsHandler::run()
                 line_stream >> question_mark;
                 if (command == SIGNUP)
                 {
-                    if (method != POST)
+                    if (method == POST)
+                    {
+                        get_parameters(line_stream, parameters);
+                        signup(parameters);    
+                    }
+                    else
                         throw Bad_Request_Ex();
-                    get_parameters(line_stream, parameters);
-                    signup(parameters);    
                 }
                 else if (command == LOGIN)
                 {
-                    if (method != POST)
-                        throw Bad_Request_Ex();
-                    get_parameters(line_stream, parameters);
-                    login(parameters);
+                    if (method == POST)
+                    {
+                        get_parameters(line_stream, parameters);
+                        login(parameters);
+                    }
+                    else
+                       throw Bad_Request_Ex();
                 }
-                else if (command == FILMS)
+                else if (command == ADD_FILM)
                 {
-                    get_parameters(line_stream, parameters);
                     if(method == POST)
+                    {
+                        get_parameters(line_stream, parameters);
                         add_film(parameters);   
-                    else if (method == PUT)
+                    }
+                    else
+                        throw Bad_Request_Ex();
+                }
+                else if (command == EDIT_FILM)
+                {
+                    if (method == POST)
+                    {
+                        get_parameters(line_stream, parameters);
                         edit_film(parameters);
-                    else if (method == DEL)
-                        delete_film(parameters); 
-                    else if (method == GET)
-                        get_film(parameters);
+                    }
+                    else
+                        throw Bad_Request_Ex();
+                }
+                else if (command == DELETE_FILM)
+                {
+                    if (method == POST)
+                    {
+                        get_parameters(line_stream, parameters);
+                        delete_film(parameters);
+                    }
+                    else
+                        throw Bad_Request_Ex();                    
                 }
                 else if (command == FOLLOWERS)
                 {
@@ -196,13 +220,23 @@ void CommandsHandler::run()
                     else
                         throw Bad_Request_Ex();
                 }
-                else if (command == COMMENTS)
+                else if (command == DELETE_COMMENT)
                 {
-                    get_parameters(line_stream, parameters);
-                    if (method == DEL)
+                    if (method == POST)
+                    {
+                        get_parameters(line_stream, parameters);
                         delete_comment(parameters);
-                    else if (method == POST)
+                    }
+                    else
+                        throw Bad_Request_Ex();
+                }
+                else if (command == ADD_COMMENT)
+                {
+                    if (method == POST)
+                    {
+                        get_parameters(line_stream, parameters);
                         add_comment(parameters);
+                    }
                     else 
                         throw Bad_Request_Ex();
                 }
@@ -218,8 +252,11 @@ void CommandsHandler::run()
                 }
                 else if (command == RATE)
                 {
-                    get_parameters(line_stream, parameters);
-                    rate_film(parameters);                    
+                    if (method == POST)
+                    {
+                        get_parameters(line_stream, parameters);
+                        rate_film(parameters);                    
+                    }
                 }
                 else if (command == PURCHASED)
                 {
@@ -233,14 +270,19 @@ void CommandsHandler::run()
                 }
                 else if (command == NOTIFICATIONS)
                 {
-                    if (question_mark == "read")
+                    if (method == GET)
                     {
-                        line_stream >> question_mark;
-                        get_parameters(line_stream, parameters);
-                        net->get_all_notifications(stoi(parameters.at("limit")));
+                        if (question_mark == READ)
+                        {
+                            line_stream >> question_mark;
+                            get_parameters(line_stream, parameters);
+                            net->get_all_notifications(stoi(parameters.at("limit")));
+                        }
+                        else
+                            net->get_unread_notifications();
                     }
                     else
-                       net->get_unread_notifications();
+                        throw Bad_Request_Ex();
                 }
             }
         }

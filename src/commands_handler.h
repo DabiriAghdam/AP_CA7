@@ -11,16 +11,20 @@
 #define GET "GET"
 #define LOGIN "login"
 #define SIGNUP "signup"
-#define FILMS "films"
+#define ADD_FILM "films"
+#define EDIT_FILM "put_films"
+#define DELETE_FILM "delete_films"
 #define FOLLOWERS "followers"
 #define MONEY "money"
 #define PUBLISHED "published"
 #define REPLIES "replies"
 #define BUY "buy"
-#define COMMENTS "comments"
+#define ADD_COMMENT "comments"
+#define DELETE_COMMENT "delete_comments"
 #define RATE "rate"
 #define PURCHASED "purchased"
 #define NOTIFICATIONS "notifications"
+#define READ "read"
 
 class Network;
 
