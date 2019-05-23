@@ -25,8 +25,12 @@ protected:
     FilmRepository film_repository;
     CommandsHandler commands_handler;
 
+    void check_logged_in();
     void check_user_access();
     float get_percent(int film_id);
+    void print_film_details(Film* film);
+    void print_film_comments(Film* film);
+    void print_recommended_films(Film* film);
 public:
     Network();
     void signup(std::string email, std::string username, std::string password, int age, bool publisher);
