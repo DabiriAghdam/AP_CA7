@@ -7,6 +7,9 @@ using namespace std;
 
 void Publisher::add_follower(Customer* follower)
 {
+    for (int i = 0; i < followers.size(); i++)
+        if (followers[i] == follower)
+            return;
     followers.push_back(follower);
 }
 
@@ -42,11 +45,14 @@ vector<Film*> Publisher::get_published_films(map<string, string> filters)
         {
             for (int i = 0; i < published_films.size(); i++)
                 if (published_films[i]->is_published() && published_films[i]->get_year() <= stoi(it->second))
-                    {
-                        std::vector<Film*>::iterator it = find(result.begin(), result.end(), published_films[i]);
-                        if (it == result.end())
-                            result.push_back(published_films[i]);
-                    }
+                {
+                    std::vector<Film*>::iterator it = find(result.begin(), result.end(), published_films[i]);
+                    if (it == result.end())
+                        result.push_back(published_films[i]);
+                }
+            for (int i = 0; i < result.size(); i++)
+                if (result[i]->get_year() > stoi(it->second))
+                    result.erase(result.begin() + i);
         }
         else if (it->first == "price")
         {
@@ -60,6 +66,9 @@ vector<Film*> Publisher::get_published_films(map<string, string> filters)
                if (published_films[i]->is_published() && published_films[i]->get_director() == it->second)
                     result.push_back(published_films[i]);
         }
+        else
+            throw Bad_Request_Ex();
+        
     }
     if (filters.size() == 0)
     {

@@ -5,6 +5,7 @@
 #include "exception.h"
 #include <string>
 #include <vector>
+#include <map>
 
 class Publisher;
 
@@ -14,8 +15,9 @@ protected:
     int year;
     int length;
     int price;
-    float score;
-    int scores_count;
+    // float score;
+    // int scores_count;
+    std::map<int, int> scores;
     bool published;
     std::string name;
     std::string summary;
@@ -35,10 +37,10 @@ public:
     std::string get_summary()  {   return summary;    }
     int get_length()  {   return length;    }
     int get_year()  {   return year;    }
-    float get_score() {  return score;   }
+    float get_score();
     int get_price() {   return price;   }
     Publisher* get_publisher()  {   return publisher;  }
-    void set_score(int _score);
+    void set_score(int user_id, int score);
     void set_name(std::string _name) {   name = _name;  }
     void set_year(int _year) { year = _year;    }
     void set_length(int _length) { length = _length;    }

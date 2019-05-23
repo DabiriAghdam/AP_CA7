@@ -10,10 +10,11 @@ void FilmRepository::add(Film* new_film)
 }
 Film* FilmRepository::find(int film_id)
 {
-    if (film_id - 1 > films.size() || film_id - 1 < 0)
-        return NULL;
-    else 
-        return films[film_id - 1];
+    for (int i = 0; i < films.size(); i++)
+    {
+        if (films[i]->get_id() == film_id)
+            return films[i];
+    }
 }
 
 vector<Film*> FilmRepository::find(map<string, string> filters)
@@ -48,6 +49,9 @@ vector<Film*> FilmRepository::find(map<string, string> filters)
                     if (it == result.end())
                         result.push_back(films[i]);
                 }
+            for (int i = 0; i < result.size(); i++)
+                if (result[i]->get_year() > stoi(it->second))
+                    result.erase(result.begin() + i);
         }
         else if (it->first == "price")
         {
@@ -61,6 +65,8 @@ vector<Film*> FilmRepository::find(map<string, string> filters)
                if (films[i]->is_published() && films[i]->get_director() == it->second)
                     result.push_back(films[i]);
         }
+        else
+            throw Bad_Request_Ex();
     }
     if (filters.size() == 0)
     {

@@ -23,6 +23,7 @@ public:
     Customer(int _id, int _age, int _money, std::string _email, std::string _username, std::string _password);
     void inc_money(int value) {  money += value; }
     int get_id() {  return id;  }
+    int get_money() {   return  money;  }
     std::string get_username() {    return username;    }
     std::string get_password() {    return password;    }
     std::string get_email() {   return email;   }

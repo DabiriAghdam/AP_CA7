@@ -53,8 +53,11 @@ vector<Film*> Customer::get_purchased_films(map<string, string> filters)
                {
                     std::vector<Film*>::iterator it = find(result.begin(), result.end(), purchased_films[i]);
                     if (it == result.end())
-                    result.push_back(purchased_films[i]);
+                        result.push_back(purchased_films[i]);
                 }
+            for (int i = 0; i < result.size(); i++)
+                if (result[i]->get_year() > stoi(it->second))
+                    result.erase(result.begin() + i);
         }
         else if (it->first == "price")
         {
@@ -68,6 +71,9 @@ vector<Film*> Customer::get_purchased_films(map<string, string> filters)
                if (purchased_films[i]->is_published() && purchased_films[i]->get_director() == it->second)
                     result.push_back(purchased_films[i]);
         }
+        else
+            throw Bad_Request_Ex();
+        
     }
     if (filters.size() == 0)
     {

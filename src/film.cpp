@@ -11,8 +11,6 @@ Film::Film(int _id, int _year, int _length, int _price, string _name, string _su
     name = _name;
     summary = _summary;
     director = _director;
-    score = 0;
-    scores_count = 0;
     publisher = _publisher;
     published = true;
 }
@@ -35,11 +33,21 @@ void Film::delete_comment(int id)
     comment->unpublish();
 }
 
-void Film::set_score(int _score)
+void Film::set_score(int user_id, int score)
 {
-    score = float((score * scores_count) + _score) / (scores_count + 1);
-    scores_count++;
+    scores[user_id] = score;
 }
+
+float Film::get_score()
+{
+    if (scores.size() == 0)
+        return 0;
+    float sum = 0;
+    for (map<int, int>::iterator it = scores.begin(); it != scores.end(); it++)
+        sum += it->second;
+    return sum / scores.size();
+}
+
 
 void Film::add_comment(string content, Customer* author)
 {
