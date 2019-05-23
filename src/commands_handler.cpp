@@ -5,6 +5,11 @@
 
 using namespace std;
 
+bool has_key(map<string, string> m, string key)
+{
+    return !(m.find(key) == m.end());
+}
+
 CommandsHandler::CommandsHandler(Network* _net)
 {
     net = _net;
@@ -33,10 +38,8 @@ void CommandsHandler::run()
             istringstream line_stream(line);
             while (line_stream >> method) 
             {
-                if (method != POST && method != PUT && method != GET && method != DEL) //lazeme?
-                {
+                if (method != POST && method != PUT && method != GET && method != DEL)
                     throw Bad_Request_Ex();
-                }
                 line_stream >> command;
                 line_stream >> question_mark;
                 if (command == SIGNUP)
@@ -47,9 +50,8 @@ void CommandsHandler::run()
                     bool publisher = false;
                     if (has_key(parameters, "publisher") && parameters["publisher"] == "true")
                         publisher = true;
-                    bool ok = net->signup(parameters.at("email"), parameters.at("username"), parameters.at("password"), stoi(parameters.at("age")), publisher);  
-                    if(ok)
-                        cout << OK;
+                    net->signup(parameters.at("email"), parameters.at("username"), parameters.at("password"), stoi(parameters.at("age")), publisher);  
+                    cout << OK;
                 }
                 else if (command == LOGIN)
                 {
@@ -64,11 +66,10 @@ void CommandsHandler::run()
                     get_parameters(line_stream, parameters);
                     if(method == POST)
                     { 
-                        bool ok = net->add_film(stoi(parameters.at("year")), 
-                            stoi(parameters.at("length")), stoi(parameters.at("price")),parameters.at("name"),
-                            parameters.at("summary"), parameters.at("director"));
-                        if (ok)  
-                            cout << OK;
+                        net->add_film(stoi(parameters.at("year")), 
+                            stoi(parameters.at("length")), stoi(parameters.at("price")),
+                            parameters.at("name"), parameters.at("summary"), parameters.at("director"));
+                        cout << OK;
                     }
                     else if (method == PUT)
                     {
@@ -77,9 +78,8 @@ void CommandsHandler::run()
                     }
                     else if (method == DEL)
                     {
-                       bool ok = net->delete_film(stoi(parameters.at("film_id")));
-                       if (ok)
-                        cout << OK;
+                       net->delete_film(stoi(parameters.at("film_id")));
+                       cout << OK;
                     }
                     else if (method == GET)
                     {
@@ -96,9 +96,8 @@ void CommandsHandler::run()
                     else if (method == POST)
                     {
                         get_parameters(line_stream, parameters);    
-                        bool ok = net->follow(stoi(parameters.at("user_id")));
-                        if (ok)
-                            cout << OK;
+                        net->follow(stoi(parameters.at("user_id")));
+                        cout << OK;
                     }
                     else 
                         throw Bad_Request_Ex();
@@ -108,13 +107,11 @@ void CommandsHandler::run()
                     if (method == POST)
                     {
                         get_parameters(line_stream, parameters); 
-                        bool ok;
                         if (has_key(parameters, "amount"))
-                            ok = net->inc_money(stoi(parameters.at("amount")));
+                            net->inc_money(stoi(parameters.at("amount")));
                         else
-                            ok = net->give_money();
-                        if (ok)
-                            cout << OK;
+                            net->get_money();
+                        cout << OK;
                     }
                     else
                         throw Bad_Request_Ex();
@@ -135,9 +132,9 @@ void CommandsHandler::run()
                     if (method == POST)
                     {
                         get_parameters(line_stream, parameters);
-                        bool ok = net->reply(stoi(parameters.at("film_id")), stoi(parameters.at("comment_id")), parameters.at("content"));                   
-                        if (ok)
-                            cout << OK;
+                        net->reply(stoi(parameters.at("film_id")), stoi(parameters.at("comment_id")),
+                             parameters.at("content"));                   
+                        cout << OK;
                     }
                     else
                         throw Bad_Request_Ex();
@@ -147,9 +144,8 @@ void CommandsHandler::run()
                     if (method == DEL)
                     {
                         get_parameters(line_stream, parameters);
-                        bool ok = net->delete_comment(stoi(parameters.at("film_id")), stoi(parameters.at("comment_id")));
-                        if (ok)
-                            cout << OK;                        
+                        net->delete_comment(stoi(parameters.at("film_id")), stoi(parameters.at("comment_id")));
+                        cout << OK;                        
                     }   
                     else if (method == POST)
                     {
@@ -202,26 +198,15 @@ void CommandsHandler::run()
         }
         catch (invalid_argument &ia)
         {
-            cout << "Bad Request\n";
-            // throw Bad_Request_Ex(); //ok?   
+            cout << BAD_REQUEST;
         }
         catch (out_of_range &ia)
         {
-            cout << "Bad Request\n";
-            // throw Bad_Request_Ex(); //ok?   
+            cout << BAD_REQUEST;
         }
-        catch (Exception &ex)
+        catch (exception &ex)
         {
             cout << ex.what();
         }
-        catch (...)
-        {   
-            cout << "Unhandled exception occured!" << endl;//lazeme?
-        }
     }
-}
-
-bool CommandsHandler::has_key(map<string, string> m, string key)
-{
-    return !(m.find(key) == m.end());
 }

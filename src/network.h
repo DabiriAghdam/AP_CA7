@@ -23,20 +23,20 @@ protected:
     float get_percent(int film_id);
 public:
     Network();
-    bool signup(std::string email, std::string username, std::string password, int age, bool publisher);
+    void signup(std::string email, std::string username, std::string password, int age, bool publisher);
     void login(std::string username, std::string password);
-    bool give_money();
-    bool reply(int film_id, int comment_id, std::string content);
-    bool delete_comment(int film_id, int comment_id);
-    bool delete_film(int film_id);
+    void get_money();
+    void reply(int film_id, int comment_id, std::string content);
+    void delete_comment(int film_id, int comment_id);
+    void delete_film(int film_id);
     void add_comment(int film_id, std::string);
     void edit_film(int film_id, std::map<std::string, std::string> parameters);
-    bool add_film(int year, int length, int price, std::string name, std::string summary, std::string director);
+    void add_film(int year, int length, int price, std::string name, std::string summary, std::string director);
     FilmRepository* get_film_repository() { return &film_repository;    }
     void start();
     void get_followers();
-    bool follow(int publisher_id);
-    bool inc_money(int value);
+    void follow(int publisher_id);
+    void inc_money(int value);
     void get_details(int film_id);
     void buy_film(int film_id);
     void rate_film(int film_id, int score);
