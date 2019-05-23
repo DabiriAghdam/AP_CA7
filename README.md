@@ -1,2 +1,2 @@
-# AP_CA7_Phase1
-Advanced Programming course - Final Project Phase 1
+# AP_CA7
+Advanced Programming Course - Final Project
