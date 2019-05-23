@@ -1,7 +1,6 @@
 #ifndef EXCEPTIONS_H
 #define EXCEPTIONS_H
 
-#include <string>
 #include <exception>
 
 #define NOT_FOUND "Not Found\n"

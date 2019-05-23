@@ -50,8 +50,8 @@ $(BUILD_DIR)/user_repository.o: $(SRC_DIR)/user_repository.cpp $(SRC_DIR)/user_r
 $(BUILD_DIR)/commands_handler.o: $(SRC_DIR)/commands_handler.cpp $(SRC_DIR)/commands_handler.h $(SRC_DIR)/exception.h
 	$(CC) -c $(SRC_DIR)/commands_handler.cpp -o $(BUILD_DIR)/commands_handler.o
 
-$(BUILD_DIR)/network.o: $(SRC_DIR)/network.cpp $(SRC_DIR)/network.h $(SRC_DIR)/customer.h $(SRC_DIR)/publisher.h \
-$(SRC_DIR)/film.h $(SRC_DIR)/film_repository.h $(SRC_DIR)/user_repository.h $(SRC_DIR)/commands_handler.h
+$(BUILD_DIR)/network.o: $(SRC_DIR)/network.cpp $(SRC_DIR)/network.h $(SRC_DIR)/publisher.h \
+$(SRC_DIR)/film_repository.h $(SRC_DIR)/user_repository.h $(SRC_DIR)/commands_handler.h
 	$(CC) -c $(SRC_DIR)/network.cpp -o $(BUILD_DIR)/network.o
 
 $(BUILD_DIR)/md5.o: $(SRC_DIR)/md5.cpp $(SRC_DIR)/md5.h

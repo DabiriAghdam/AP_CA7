@@ -2,7 +2,6 @@
 #define USER_REPOSITORY_H
 
 #include "customer.h"
-#include <vector>
 
 class UserRepository {
 protected:

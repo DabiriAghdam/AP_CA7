@@ -3,8 +3,6 @@
 
 #include "comment.h"
 #include "exception.h"
-#include <string>
-#include <vector>
 #include <map>
 
 class Publisher;

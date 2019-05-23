@@ -2,8 +2,6 @@
 #define FILM_REPOSITORY_H
 
 #include "film.h"
-#include <string>
-#include <map>
 
 class FilmRepository {
 protected:

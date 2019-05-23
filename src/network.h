@@ -1,14 +1,10 @@
 #ifndef NETWORK_H
 #define NETWORK_H
 
-#include "customer.h"
 #include "publisher.h"
-#include "film.h"
 #include "film_repository.h"
 #include "user_repository.h"
 #include "commands_handler.h"
-#include <vector>
-#include <map>
 
 #define LOW 5
 #define MID 8

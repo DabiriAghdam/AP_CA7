@@ -2,8 +2,6 @@
 #define PUBLISHER_H
 
 #include "customer.h"
-#include "film.h"
-#include <vector>
 
 #define PUBLISHER "Publisher"
 

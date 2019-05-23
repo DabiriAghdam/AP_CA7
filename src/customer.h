@@ -3,9 +3,6 @@
 
 #include "film.h"
 #include "notification.h"
-#include <string>
-#include <vector>
-#include <map>
 
 #define CUSTOMER "Customer"
 
