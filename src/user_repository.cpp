@@ -9,7 +9,7 @@ Customer* UserRepository::find(int customer_id)
         if (users[i]->get_id() == customer_id)
             return users[i];
     }
-    return NULL;//throw exception?
+    return NULL;
 }
 
 Customer* UserRepository::find(string username)
@@ -26,3 +26,8 @@ void UserRepository::add(Customer* new_user)
 {
     users.push_back(new_user);
 }
+
+int UserRepository::get_users_count() 
+{ 
+    return users.size();    
+}    

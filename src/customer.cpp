@@ -13,6 +13,41 @@ Customer::Customer(int _id,int _age, int _money, string _email, string _username
     password = _password;
 }
 
+void Customer::inc_money(int value) 
+{  
+    money += value; 
+}
+
+int Customer::get_id() 
+{  
+    return id;  
+}
+
+int Customer::get_money() 
+{   
+    return  money;  
+}
+
+string Customer::get_username() 
+{    
+    return username;    
+}
+
+string Customer::get_password() 
+{    
+    return password;   
+}
+
+string Customer::get_email() 
+{   
+    return email;   
+}
+
+string Customer::get_type() 
+{    
+    return CUSTOMER;  
+}
+
 Film* Customer::find_in_purchased_films(int film_id)
 {
     for (int i = 0; i < purchased_films.size(); i++)
@@ -51,7 +86,7 @@ vector<Film*> Customer::get_purchased_films(map<string, string> filters)
             for (int i = 0; i < purchased_films.size(); i++)
                if (purchased_films[i]->is_published() && purchased_films[i]->get_year() <= stoi(it->second))
                {
-                    std::vector<Film*>::iterator it = find(result.begin(), result.end(), purchased_films[i]);
+                    vector<Film*>::iterator it = find(result.begin(), result.end(), purchased_films[i]);
                     if (it == result.end())
                         result.push_back(purchased_films[i]);
                 }
@@ -89,25 +124,25 @@ void Customer::purchase_film(Film* film)
     purchased_films.push_back(film);
 }
 
-std::vector<Notification*> Customer::get_unread_notifications()
+vector<Notification*> Customer::get_unread_notifications()
 {
-    std::vector<Notification*> result;
+    vector<Notification*> result;
     for (int i = 0; i < notifications.size(); i++)
         if (!notifications[i]->get_read())
             result.push_back(notifications[i]);
     return result;
 }
 
-std::vector<Notification*> Customer::get_all_notifications()
+vector<Notification*> Customer::get_all_notifications()
 {
-    std::vector<Notification*> result;
+    vector<Notification*> result;
     for (int i = 0; i < notifications.size(); i++)
         if (!notifications[i]->get_read())
             result.push_back(notifications[i]);
     return result;
 }
 
-void Customer::add_notification(std::string message)
+void Customer::add_notification(string message)
 {
     Notification* notification = new Notification(message);
     notifications.push_back(notification);

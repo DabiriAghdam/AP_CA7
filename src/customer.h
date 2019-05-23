@@ -21,13 +21,13 @@ protected:
     std::vector<Notification*> notifications; 
 public:
     Customer(int _id, int _age, int _money, std::string _email, std::string _username, std::string _password);
-    void inc_money(int value) {  money += value; }
-    int get_id() {  return id;  }
-    int get_money() {   return  money;  }
-    std::string get_username() {    return username;    }
-    std::string get_password() {    return password;    }
-    std::string get_email() {   return email;   }
-    virtual std::string get_type() {    return CUSTOMER;  }
+    void inc_money(int value);
+    int get_id();
+    int get_money();
+    std::string get_username();
+    std::string get_password();
+    std::string get_email();
+    virtual std::string get_type();
     std::vector<Film*> get_purchased_films(std::map<std::string, std::string> filters);
     Film* find_in_purchased_films(int film_id);
     void purchase_film(Film* film);

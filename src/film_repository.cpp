@@ -45,7 +45,7 @@ vector<Film*> FilmRepository::find(map<string, string> filters)
             for (int i = 0; i < films.size(); i++)
                if (films[i]->is_published() && films[i]->get_year() <= stoi(it->second))
                 {
-                    std::vector<Film*>::iterator it = std::find(result.begin(), result.end(), films[i]);
+                    vector<Film*>::iterator it = std::find(result.begin(), result.end(), films[i]);
                     if (it == result.end())
                         result.push_back(films[i]);
                 }
@@ -83,17 +83,22 @@ void FilmRepository::remove(int film_id)
     film->unpublish();
 }
 
+int FilmRepository::get_films_count()   
+{   
+    return films.size();    
+}
+
 bool cmp(Film* film1, Film* film2)
 {
     return film1->get_score() > film2->get_score();
 }
 
-std::vector<Film*> FilmRepository::get_recommendation(Film* film, Customer* user)
+vector<Film*> FilmRepository::get_recommendation(Film* film, Customer* user)
 {
-    std::vector<Film*> sorted = films;
-    std::vector<Film*> result;
+    vector<Film*> sorted = films;
+    vector<Film*> result;
     int count = 4;
-    std::sort(sorted.begin(), sorted.end(), cmp);
+    sort(sorted.begin(), sorted.end(), cmp);
     for (int i = 0; i < sorted.size() && count > 0; i++)
     {
         if (user->find_in_purchased_films(sorted[i]->get_id()) == NULL && sorted[i]->is_published() && film != sorted[i])

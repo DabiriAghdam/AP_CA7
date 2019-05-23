@@ -14,7 +14,7 @@ public:
     void add(Film* new_film);
     void edit(std::map<std::string, std::string> parameters);
     void remove(int film_id);
-    int get_films_count()   {   return films.size();    }
+    int get_films_count();
     std::vector<Film*> get_recommendation(Film* film, Customer* user);
 };
 

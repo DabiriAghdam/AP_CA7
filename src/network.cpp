@@ -55,7 +55,7 @@ void Network::login(string username, string password)
         logged_in_user = user;
 }
 
-void Network::add_film(int year, int length, int price, std::string name, std::string summary, std::string director)
+void Network::add_film(int year, int length, int price, string name, string summary, string director)
 {
     check_user_access();
     int id = film_repository.get_films_count() + 1;
@@ -242,19 +242,18 @@ void Network::buy_film(int film_id)
 
 float Network::get_percent(int film_id)
 {
-    //define kon?!
     Film* film = film_repository.find(film_id);
     if (film == NULL)
         throw Not_Found_Ex();
     Publisher* publisher = film->get_publisher();
     int price = film->get_price();
     float score = film->get_score();
-    if (score < 5)
-        return 0.8;
-    else if (score < 8)
-        return 0.9;
-    else 
-        return 0.95; 
+    if (score < LOW)
+        return WEAK;
+    else if (score < MID)
+        return AVERAGE;
+    else
+        return STRONG; 
 }
 
 void Network::rate_film(int film_id, int score)
@@ -344,7 +343,7 @@ void Network::get_unread_notifications()
     if (logged_in_user == NULL)
         throw Permission_Denied_Ex();
 
-    std::vector<Notification*> unreads = logged_in_user->get_unread_notifications();
+    vector<Notification*> unreads = logged_in_user->get_unread_notifications();
     cout << "#. Notification Message" << endl;
     for (int i = unreads.size() - 1; i >= 0; i--)
     {
@@ -358,7 +357,7 @@ void Network::get_all_notifications(int limit)
     if (logged_in_user == NULL)
         throw Permission_Denied_Ex();
     
-    std::vector<Notification*> notifs = logged_in_user->get_all_notifications();
+    vector<Notification*> notifs = logged_in_user->get_all_notifications();
     cout << "#. Notification Message" << endl;
     for (int i = notifs.size() - 1; i >= 0 && limit > 0; i--)
     {

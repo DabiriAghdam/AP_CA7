@@ -10,6 +10,12 @@
 #include <vector>
 #include <map>
 
+#define LOW 5
+#define MID 8
+#define WEAK 0.8
+#define AVERAGE 0.9
+#define STRONG 0.95
+
 class Network {
 protected:
     int revenue;
@@ -32,7 +38,6 @@ public:
     void add_comment(int film_id, std::string);
     void edit_film(int film_id, std::map<std::string, std::string> parameters);
     void add_film(int year, int length, int price, std::string name, std::string summary, std::string director);
-    FilmRepository* get_film_repository() { return &film_repository;    }
     void start();
     void get_followers();
     void follow(int publisher_id);
