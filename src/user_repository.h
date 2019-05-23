@@ -8,6 +8,7 @@ class UserRepository {
 protected:
      std::vector<Customer*> users;
 public:
+    ~UserRepository();
     Customer* find(int customer_id);
     Customer* find(std::string username);
     void add(Customer* new_user);

@@ -21,6 +21,7 @@ protected:
     std::vector<Notification*> notifications; 
 public:
     Customer(int _id, int _age, int _money, std::string _email, std::string _username, std::string _password);
+    ~Customer();
     void inc_money(int value);
     int get_id();
     int get_money();

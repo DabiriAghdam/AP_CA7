@@ -13,6 +13,12 @@ Customer::Customer(int _id,int _age, int _money, string _email, string _username
     password = _password;
 }
 
+Customer::~Customer()
+{
+    for (int i = 0; i < notifications.size(); i++)
+        delete notifications[i];
+}
+
 void Customer::inc_money(int value) 
 {  
     money += value; 

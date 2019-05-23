@@ -15,6 +15,12 @@ Film::Film(int _id, int _year, int _length, int _price, string _name, string _su
     published = true;
 }
 
+Film::~Film()
+{
+    for (int i = 0; i < comments.size(); i++)
+        delete comments[i];
+}
+
 Comment* Film::get_comment(int id)
 {
     for (int i = 0; i < comments.size(); i++)

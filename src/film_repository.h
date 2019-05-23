@@ -9,6 +9,7 @@ class FilmRepository {
 protected:
     std::vector<Film*> films;
 public:
+    ~FilmRepository();
     std::vector<Film*> find(std::map<std::string, std::string> filters);
     Film* find(int film_id);
     void add(Film* new_film);

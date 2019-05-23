@@ -4,6 +4,12 @@
 
 using namespace std;
 
+FilmRepository::~FilmRepository()
+{
+    for (int i = 0; i < films.size(); i++)
+        delete films[i];    
+}
+
 void FilmRepository::add(Film* new_film)
 {
     films.push_back(new_film);

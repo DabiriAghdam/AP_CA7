@@ -2,6 +2,12 @@
 
 using namespace std;
 
+UserRepository::~UserRepository()
+{
+    for (int i = 0; i < users.size(); i++)
+        delete users[i];
+}
+
 Customer* UserRepository::find(int customer_id)
 {
     for (int i = 0; i < users.size(); i++)

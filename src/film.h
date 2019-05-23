@@ -15,8 +15,6 @@ protected:
     int year;
     int length;
     int price;
-    // float score;
-    // int scores_count;
     std::map<int, int> scores;
     bool published;
     std::string name;
@@ -26,6 +24,7 @@ protected:
     Publisher* publisher;   
 public:
     Film(int _id, int _year, int _length, int _price, std::string _name, std::string _summary, std::string _director, Publisher* _publisher);
+    ~Film();
     Comment* get_comment(int id);
     void delete_comment(int id);
     float get_score();
