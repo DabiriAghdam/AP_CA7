@@ -231,7 +231,7 @@ void Network::print_film_comments(Film* film)
 
 void Network::print_recommended_films(Film* film)
 {
-    vector<Film*> recommended = film_repository.get_recommendation(film, logged_in_user);
+    vector<Film*> recommended = film_repository.get_recommendations(film, logged_in_user);
     cout << endl << "Recommendation Film" << endl
          << "#. Film Id | Film Name | Film Length | Film Director" << endl;
     for (int i = 0; i < recommended.size(); i++)
@@ -275,8 +275,14 @@ void Network::buy_film(int film_id)
             << logged_in_user->get_id() << " buy your film " << film->get_name()
             << " with id " << film->get_id() << '.';
         publisher->add_notification(msg.str());
+        film_repository.update_adjacency_matrix(logged_in_user, film);
     }
 }
+
+// void Network::update_adjacency_matrix()
+// {
+
+// }
 
 float Network::get_percent(int film_id)
 {
