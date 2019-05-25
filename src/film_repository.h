@@ -8,8 +8,10 @@
 class FilmRepository {
 protected:
     std::vector<Film*> films;
-    std::vector<std::vector<int>> adjacency_matrix;
+    std::vector<std::vector<int>> films_adjacency_matrix;
     std::map<int, int> id_location;
+
+    int find_largest_index(std::vector<int> input, std::vector<int> skips);
 public:
     ~FilmRepository();
     std::vector<Film*> find(std::map<std::string, std::string> filters);

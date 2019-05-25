@@ -13,10 +13,10 @@ FilmRepository::~FilmRepository()
 void FilmRepository::add(Film* new_film)
 {
     films.push_back(new_film);
-    adjacency_matrix.resize(get_films_count());
-    for (int i = 0; i < adjacency_matrix.size(); i++)
-        adjacency_matrix[i].resize(get_films_count());
-    id_location[new_film->get_id()] = adjacency_matrix.size() - 1;
+    films_adjacency_matrix.resize(get_films_count());
+    for (int i = 0; i < films_adjacency_matrix.size(); i++)
+        films_adjacency_matrix[i].resize(get_films_count());
+    id_location[new_film->get_id()] = films_adjacency_matrix.size() - 1;
 }
 
 Film* FilmRepository::find(int film_id)
@@ -92,14 +92,12 @@ void FilmRepository::remove(int film_id)
 {
     Film* film = find(film_id);
     film->unpublish();
-    //change adjancency matrix ?
     int location = id_location[film_id];
-    for (int i = 0; i < adjacency_matrix[location].size(); i++)
-       if ( i != location || 1) //are?
-       {
-            adjacency_matrix[location][i] = -1;
-            adjacency_matrix[i][location] = -1;
-       }
+    for (int i = 0; i < films_adjacency_matrix[location].size(); i++)
+    {
+        films_adjacency_matrix[location][i] = -1;
+        films_adjacency_matrix[i][location] = -1;
+    }
 }
 
 int FilmRepository::get_films_count()   
@@ -107,18 +105,32 @@ int FilmRepository::get_films_count()
     return films.size();    
 }
 
-// bool cmp(Film* film1, Film* film2)
-// {
-//     return film1->get_score() > film2->get_score();
-// }
+void FilmRepository::update_adjacency_matrix(Customer* user, Film* film)
+{
+    map<string, string> all;
+    int new_film_location = id_location[film->get_id()];
+    vector<Film*> purchased = user->get_purchased_films(all);
+    for (int i = 0; i < purchased.size(); i++)
+    {
+        if (purchased[i]->is_published() && purchased[i] != film) 
+        {
+            int location = id_location[purchased[i]->get_id()];
+            if (films_adjacency_matrix[location][new_film_location] != -1)
+                films_adjacency_matrix[location][new_film_location]++;
+            if (films_adjacency_matrix[new_film_location][location] != -1)            
+                films_adjacency_matrix[new_film_location][location]++;
+        }
+    }
+}
 
-void find_largest(vector<int> input, vector<int> skips, int &largest_value, int &largest_index)
+int FilmRepository::find_largest_index(vector<int> input, vector<int> skips)
 {
     bool skip = false;
-    largest_value = 0;
+    int largest_value = -1;
+    int largest_index = -1;
     for (int i = 0; i < input.size(); i++)
     {
-        if (input[i] >= largest_value)
+        if (input[i] > largest_value)
         {
             for (int j = 0; j < skips.size(); j++)
             {
@@ -136,6 +148,7 @@ void find_largest(vector<int> input, vector<int> skips, int &largest_value, int 
         }
         skip = false;
     }
+    return largest_index;
 }
 
 vector<Film*> FilmRepository::get_recommendations(Film* film, Customer* user)
@@ -143,72 +156,26 @@ vector<Film*> FilmRepository::get_recommendations(Film* film, Customer* user)
     vector<Film*> result;
     int count = RECOMMENDED_COUNT;
     int location = id_location[film->get_id()];
-    // vector<int> test;
-    // test.push_back(1);
-    // test.push_back(5);
-    // test.push_back(0);
-    // test.push_back(4);
-    // test.push_back(3);
-    // adjacency_matrix[location] = test;
-
-    int first, first_index = -1;
-    int second, second_index = -1;
-    int third, third_index = -1;
-    int fourth, fourth_index = -1; 
+    vector<int> recommended_films_index(RECOMMENDED_COUNT);
     vector<int> skips;
     skips.push_back(location);
-    find_largest(adjacency_matrix[location], skips, first, first_index);
-    skips.push_back(first_index);
-    find_largest(adjacency_matrix[location], skips, second, second_index);
-    skips.push_back(second_index);
-    find_largest(adjacency_matrix[location], skips, third, third_index);
-    skips.push_back(third_index);
-    find_largest(adjacency_matrix[location], skips, fourth, fourth_index);
-    skips.push_back(fourth_index);
 
-    for (map<int, int>::iterator it = id_location.begin(); it != id_location.end(); it++)
+    for (int i = 0; i < RECOMMENDED_COUNT; i++)
+    {    
+        recommended_films_index[i] = find_largest_index(films_adjacency_matrix[location], skips);
+        skips.push_back(recommended_films_index[i]);
+    }
+    for (int i = 0; i < RECOMMENDED_COUNT; i++)
     {
-        if (first_index == it->second)
+        for (map<int, int>::iterator it = id_location.begin(); it != id_location.end(); it++)
         {
-            Film* temp = find(it->first);
-            result.push_back(temp);
-        }
-
-        if (second_index == it->second)
-        {
-            Film* temp = find(it->first);
-            result.push_back(temp);
-        }
-
-        if (third_index == it->second)
-        {
-            Film* temp = find(it->first);
-            result.push_back(temp);
-        }
-
-        if (fourth_index == it->second)
-        {
-            Film* temp = find(it->first);
-            result.push_back(temp);
-        }
-    } 
-    return result;
-}
-
-void FilmRepository::update_adjacency_matrix(Customer* user, Film* film)
-{
-    map<string, string> filter;//are?
-    int new_film_location = id_location[film->get_id()];
-    vector<Film*> purchased = user->get_purchased_films(filter);
-    for (int i = 0; i < purchased.size(); i++)
-    {
-        if (purchased[i]->is_published() && purchased[i] != film) 
-        {
-            int location = id_location[purchased[i]->get_id()];
-            if (adjacency_matrix[location][new_film_location] != -1)
-                adjacency_matrix[location][new_film_location]++;
-            if (adjacency_matrix[new_film_location][location] != -1)            
-                adjacency_matrix[new_film_location][location]++;
+            if (recommended_films_index[i] == it->second)
+            {
+                Film* recommended = find(it->first);
+                result.push_back(recommended);
+                break;
+            }
         }
     }
+    return result;
 }
