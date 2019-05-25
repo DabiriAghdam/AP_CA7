@@ -11,6 +11,9 @@
 #define WEAK 0.8
 #define AVERAGE 0.9
 #define STRONG 0.95
+#define ADMIN_USER "admin"
+#define ADMIN_PASS "admin"
+#define ADMIN_EMAIL "admin@admin.com"
 
 class Network {
 protected:
@@ -28,6 +31,7 @@ protected:
     void print_film_comments(Film* film);
     void print_recommended_films(Film* film);
     bool logged_in();
+    bool is_admin();
 public:
     Network();
     void logout();

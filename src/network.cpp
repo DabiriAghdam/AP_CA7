@@ -13,8 +13,14 @@ bool is_valid_email(const string& email)
 }
 Network::Network() : commands_handler(this) 
 { 
-    revenue = 0;
     logged_in_user = NULL;
+    revenue = 0;
+    int age = -1;
+    signup(ADMIN_EMAIL, ADMIN_USER, ADMIN_PASS, age, false);
+    logged_in_user = NULL;
+    // string hashedpass = md5(ADMIN_PASS);
+    // Customer* admin = new Customer(ADMIN_ID, age, money, ADMIN_EMAIL, ADMIN_USER, hashedpass);
+    // user_repository.add(admin);
 }
 
 void Network::start()
@@ -24,7 +30,7 @@ void Network::start()
 
 bool Network::logged_in()
 {
-    return logged_in_user != NULL;
+    return (logged_in_user != NULL);
 }
 
 void Network::logout()
@@ -41,15 +47,16 @@ void Network::signup(string email, string username, string password, int age, bo
     
     string hashed_pass = md5(password);
     int id = user_repository.get_users_count() + 1;
+    int money = 0;
     if (publisher)
     {
-        Publisher* new_user = new Publisher(id, age, 0, email, username, hashed_pass);
+        Publisher* new_user = new Publisher(id, age, money, email, username, hashed_pass);
         user_repository.add(new_user);
-        publishers_revenue[id] = 0;
+        publishers_revenue[id] = money;
     }
     else 
     {
-        Customer* new_user = new Customer(id, age, 0, email, username, hashed_pass);
+        Customer* new_user = new Customer(id, age, money, email, username, hashed_pass);
         user_repository.add(new_user);
     }
     logged_in_user = user_repository.find(id);
@@ -67,6 +74,9 @@ void Network::login(string username, string password)
 
 void Network::add_film(int year, int length, int price, string name, string summary, string director)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     check_user_access();
     int id = film_repository.get_films_count() + 1;
@@ -78,6 +88,9 @@ void Network::add_film(int year, int length, int price, string name, string summ
 
 void Network::delete_film(int film_id)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+    
     check_logged_in();
     check_user_access();
     Film* film = film_repository.find(film_id);
@@ -90,6 +103,9 @@ void Network::delete_film(int film_id)
 
 void Network::edit_film(int film_id, map<string, string> parameters)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     check_user_access();
     Film* film = film_repository.find(film_id);
@@ -116,6 +132,9 @@ void Network::edit_film(int film_id, map<string, string> parameters)
 
 void Network::get_followers()
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     check_user_access();
     vector<Customer*> followers = ((Publisher*)logged_in_user)->get_followers();
@@ -129,6 +148,9 @@ void Network::get_followers()
 
 void Network::give_money()
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     check_user_access();
     int money = publishers_revenue[logged_in_user->get_id()];
@@ -137,11 +159,21 @@ void Network::give_money()
     revenue -= money;
 }
 
+bool Network::is_admin()
+{
+    if (logged_in_user != NULL)
+        return (logged_in_user->get_username() == ADMIN_USER);
+    else
+        return false;
+}
+
 void Network::get_money()
 {
-    //publisher ghabl az tasfie hesab k nemikhad neshon bedim?!
     check_logged_in();
-    cout << logged_in_user->get_money() << endl;
+    if (is_admin())
+        cout << revenue << endl;
+    else
+        cout << logged_in_user->get_money() << endl;
 }
 
 void Network::check_logged_in()
@@ -158,6 +190,9 @@ void Network::check_user_access()
 
 void Network::reply(int film_id, int comment_id, string content)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     check_user_access();
     Film* film = film_repository.find(film_id);
@@ -178,6 +213,9 @@ void Network::reply(int film_id, int comment_id, string content)
 
 void Network::delete_comment(int film_id, int comment_id)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     check_user_access();
     Film* film = film_repository.find(film_id);
@@ -188,6 +226,9 @@ void Network::delete_comment(int film_id, int comment_id)
 
 void Network::follow(int publisher_id)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     Customer* publisher = user_repository.find(publisher_id);
     if (publisher == NULL)
@@ -204,6 +245,9 @@ void Network::follow(int publisher_id)
 
 void Network::inc_money(int value)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     logged_in_user->inc_money(value);
 }
@@ -243,6 +287,9 @@ void Network::print_recommended_films(Film* film)
 
 void Network::get_details(int film_id)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     Film* film = film_repository.find(film_id);
     if (film == NULL || !film->is_published())
@@ -255,6 +302,9 @@ void Network::get_details(int film_id)
 
 void Network::buy_film(int film_id)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     Film* film = film_repository.find(film_id);
     if (film == NULL)
@@ -279,11 +329,6 @@ void Network::buy_film(int film_id)
     }
 }
 
-// void Network::update_adjacency_matrix()
-// {
-
-// }
-
 float Network::get_percent(int film_id)
 {
     Film* film = film_repository.find(film_id);
@@ -302,6 +347,9 @@ float Network::get_percent(int film_id)
 
 void Network::rate_film(int film_id, int score)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     Film* film = logged_in_user->find_in_purchased_films(film_id);
     if (film == NULL)
@@ -319,6 +367,9 @@ void Network::rate_film(int film_id, int score)
 
 void Network::add_comment(int film_id, string content)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     Film* film = logged_in_user->find_in_purchased_films(film_id);
     if (film == NULL)
@@ -333,6 +384,9 @@ void Network::add_comment(int film_id, string content)
 
 void Network::find_films(map<string, string> filters)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     vector<Film*> result = film_repository.find(filters);
     cout << "#. Film Id | Film Name | Film Length | Film price | Rate | Production Year | Film Director" << endl;
@@ -347,6 +401,9 @@ void Network::find_films(map<string, string> filters)
 
 void Network::get_purchased_films(map<string, string> filters)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     vector<Film*> result = logged_in_user->get_purchased_films(filters);
     cout << "#. Film Id | Film Name | Film Length | Film price | Rate | Production Year | Film Director" << endl;
@@ -361,6 +418,9 @@ void Network::get_purchased_films(map<string, string> filters)
 
 void Network::get_published_films(map<string, string> filters)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     check_user_access();
     vector<Film*> result = ((Publisher*)logged_in_user)->get_published_films(filters);
@@ -376,6 +436,9 @@ void Network::get_published_films(map<string, string> filters)
 
 void Network::get_unread_notifications()
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     vector<Notification*> unreads = logged_in_user->get_unread_notifications();
     cout << "#. Notification Message" << endl;
@@ -388,6 +451,9 @@ void Network::get_unread_notifications()
 
 void Network::get_all_notifications(int limit)
 {
+    if (is_admin())
+        throw Bad_Request_Ex();
+
     check_logged_in();
     vector<Notification*> notifs = logged_in_user->get_all_notifications();
     cout << "#. Notification Message" << endl;
