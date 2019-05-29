@@ -1,4 +1,5 @@
 #include "network.h"
+#include "handlers.h"
 #include "md5.h"
 #include <iostream>
 #include <iomanip> 
@@ -11,7 +12,7 @@ bool is_valid_email(const string& email)
    const regex pattern ("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
    return regex_match(email, pattern);
 }
-Network::Network() : commands_handler(this) 
+Network::Network() : http_server(PORT)// commands_handler(this) 
 { 
     logged_in_user = NULL;
     revenue = 0;
@@ -20,9 +21,24 @@ Network::Network() : commands_handler(this)
     logged_in_user = NULL;
 }
 
+void Network::initialize_handlers()
+{
+    http_server.get("/", new HelloWorld());
+    http_server.get("/add", new Adder());
+    http_server.get("/addform", new ShowPage("src/static/addform.html"));
+}
+
 void Network::start()
 {
-    commands_handler.run();
+    // commands_handler.run();
+    try 
+    {
+        http_server.run();
+    } 
+    catch (Server::Exception e) 
+    {
+    cerr << e.getMessage() << endl;
+    }
 }
 
 bool Network::logged_in()
@@ -318,8 +334,6 @@ float Network::get_percent(int film_id)
     Film* film = film_repository.find(film_id);
     if (film == NULL)
         throw Not_Found_Ex();
-    Publisher* publisher = film->get_publisher();
-    int price = film->get_price();
     float score = film->get_score();
     if (score < LOW)
         return WEAK;

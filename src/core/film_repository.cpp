@@ -26,6 +26,7 @@ Film* FilmRepository::find(int film_id)
         if (films[i]->get_id() == film_id)
             return films[i];
     }
+    return NULL;
 }
 
 vector<Film*> FilmRepository::find(map<string, string> filters)
@@ -154,7 +155,6 @@ int FilmRepository::find_largest_index(vector<int> input, vector<int> skips)
 vector<Film*> FilmRepository::get_recommendations(Film* film, Customer* user)
 {
     vector<Film*> result;
-    int count = RECOMMENDED_COUNT;
     int location = id_location[film->get_id()];
     vector<int> recommended_films_index(RECOMMENDED_COUNT);
     vector<int> skips;

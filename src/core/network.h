@@ -4,8 +4,10 @@
 #include "publisher.h"
 #include "film_repository.h"
 #include "user_repository.h"
-#include "commands_handler.h"
+// #include "commands_handler.h"
+#include "http_server.h"
 
+#define PORT 5000
 #define LOW 5
 #define MID 8
 #define WEAK 0.8
@@ -22,7 +24,8 @@ protected:
     std::map<int, int> publishers_revenue;
     UserRepository user_repository;
     FilmRepository film_repository;
-    CommandsHandler commands_handler;
+    HttpServer http_server;
+    // CommandsHandler commands_handler;
 
     void check_logged_in();
     void check_user_access();
@@ -34,6 +37,8 @@ protected:
     bool is_admin();
 public:
     Network();
+    void start();
+    void initialize_handlers();
     void logout();
     void signup(std::string email, std::string username, std::string password, int age, bool publisher);
     void login(std::string username, std::string password);
@@ -45,7 +50,6 @@ public:
     void add_comment(int film_id, std::string);
     void edit_film(int film_id, std::map<std::string, std::string> parameters);
     void add_film(int year, int length, int price, std::string name, std::string summary, std::string director);
-    void start();
     void get_followers();
     void follow(int publisher_id);
     void inc_money(int value);
