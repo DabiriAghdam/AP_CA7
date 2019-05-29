@@ -23,9 +23,15 @@ Network::Network() : http_server(PORT)// commands_handler(this)
 
 void Network::initialize_handlers()
 {
-    http_server.get("/", new HelloWorld());
-    http_server.get("/add", new Adder());
-    http_server.get("/addform", new ShowPage("src/static/addform.html"));
+    http_server.post("/signup", new SignUp());
+    http_server.get("/signupform", new ShowPage("src/static/signupform.html"));
+    http_server.post("/login", new Login());
+    http_server.get("/loginform", new ShowPage("src/static/loginform.html"));
+    http_server.get("/addfilmform", new ShowPage("src/static/addfilmform.html"));
+    http_server.post("/addfilm", new AddFilm());
+    http_server.get("/homepage", new ShowPage("src/static/homepage.html"));
+    http_server.get("/profilepage", new ShowPage("src/static/profile.html"));
+    http_server.get("/filmdetails", new ShowPage("src/static/filmdetails.html"));
 }
 
 void Network::start()
@@ -37,7 +43,7 @@ void Network::start()
     } 
     catch (Server::Exception e) 
     {
-    cerr << e.getMessage() << endl;
+        cerr << e.getMessage() << endl;//are?
     }
 }
 

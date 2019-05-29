@@ -4,12 +4,22 @@
 #include "../server/server.hpp"
 #include <iostream>
 
-class HelloWorld : public RequestHandler {
+class Adder : public RequestHandler {
 public:
   Response *callback(Request *);
 };
 
-class Adder : public RequestHandler {
+class AddFilm : public RequestHandler {
+public:
+  Response *callback(Request *);
+};
+
+class SignUp : public RequestHandler {
+public:
+  Response *callback(Request *);
+};
+
+class Login : public RequestHandler {
 public:
   Response *callback(Request *);
 };

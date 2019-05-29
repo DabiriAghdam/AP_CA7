@@ -3,20 +3,9 @@
 #include "handlers.h"
 using namespace std;
 
-Response *HelloWorld::callback(Request *req) {
-  Response *res = new Response;
-  res->setHeader("Content-Type", "text/html");
-  res->setHeader("Developer-Name", "Ramtin");
-  string body;
-  body += "<!DOCTYPE html>";
-  body += "<html>";
-  body += "<body>";
-  body += "<h1>Hello World!</h1>";
-  body += "</body>";
-  body += "</html>";
-  res->setBody(body);
-  return res;
-}
+Response* Login::callback(Request *req) {}
+Response* SignUp::callback(Request *req) {}
+Response* AddFilm::callback(Request *req) {}
 
 Response *Adder::callback(Request *req) {
   Response *res = new Response;
