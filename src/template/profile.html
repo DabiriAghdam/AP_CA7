@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Profile</title>
+  </head>
+  <body>
+  <h1> Your purchased films </h1>
+  <%
+  for (int i = 0; i < stoi(context["count"]); i++)
+  {
+  %>
+  <h3> Details of <% cout << context["name" + to_string(i)]; %></h3>
+  <h4>Director: <% cout << context["director" + to_string(i)]; %></h4>
+  <h4>Length: <% cout << context["length" + to_string(i)]; %></h4>
+  <h4>Year: <% cout << context["year" + to_string(i)]; %></h4>
+  <h4>Rate: <% cout << context["rate" + to_string(i)]; %></h4>
+  <h4>Price: <% cout << context["price" + to_string(i)]; %></h4>
+  <%
+  }   
+  %>
+<a href = "/logout" > Logout </a>
+  </body>
+</html>

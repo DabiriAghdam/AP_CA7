@@ -46,4 +46,20 @@ public:
   	std::map<std::string, std::string> handle(Request *req);
 };
 
+class GetHome : public TemplateHandler  {
+private:
+  	Network* net;
+public:
+	GetHome(Network* _net, std::string filePath);
+  	std::map<std::string, std::string> handle(Request *req);
+};
+
+class GetProfile : public TemplateHandler  {
+private:
+  	Network* net;
+public:
+	GetProfile(Network* _net, std::string filePath);
+  	std::map<std::string, std::string> handle(Request *req);
+};
+
 #endif

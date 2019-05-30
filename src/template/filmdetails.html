@@ -15,7 +15,7 @@
 
   <h2> Recommendations: </h2>
   <%
-  for (int i = 0; i < stoi(context["recommended_size"]); i++)
+  for (int i = 0; i < stoi(context["count"]); i++)
   {
   %>  
     <h4>Name: <% cout << context["name" + to_string(i)]; %></h4>
