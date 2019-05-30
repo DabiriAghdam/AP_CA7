@@ -19,7 +19,7 @@ GetFilm::GetFilm(Network* _net, string filePath) : net(_net), TemplateHandler(fi
 Response* SignUpHandler::callback(Request *req) 
 {
 	if (req->getSessionId() != "")
-	return Response::redirect("/homepage");
+	return Response::redirect("/home");
 
 	Response* res = new Response(303);
 	string email = req->getBodyParam("email");
@@ -34,11 +34,11 @@ Response* SignUpHandler::callback(Request *req)
 		int id = net->signup(email, username, password, age, publisher);
 		res->setSessionId(to_string(id));
 	}
-	catch (exception ex)
+	catch (Bad_Request_Ex ex)
 	{
 		throw Server::Exception(ex.what()); //kafie?
 	}
-	res->setHeader("Location", "/homepage");
+	res->setHeader("Location", "/home");
 	return res;
 }
 
@@ -59,7 +59,7 @@ Response* LoginHandler::callback(Request *req)
 	{
 		throw Server::Exception(ex.what()); //kafie?
 	}
-  	res->setHeader("Location", "/homepage");
+  	res->setHeader("Location", "/home");
 	return res;
 }
 
@@ -71,18 +71,18 @@ Response* LogoutHandler::callback(Request *req)
 		net->logout();
 		res->setSessionId("");
 	}
-	catch (exception ex)
+	catch (Permission_Denied_Ex ex)
 	{
 		throw Server::Exception(ex.what()); //kafie?
 	}
-  	res->setHeader("Location", "/loginform");
+  	res->setHeader("Location", "/login");
 	return res;
 }
 
 Response* AddFilm::callback(Request *req) 
 {
-	if (req->getSessionId() != "")
-	return Response::redirect("/homepage");
+	if (req->getSessionId() == "")
+	return Response::redirect("/login");
 
 	Response* res = new Response(303);
 	string name = req->getBodyParam("name");
@@ -95,20 +95,33 @@ Response* AddFilm::callback(Request *req)
 	{
 		net->add_film(year, length, price, name, summary, director);
 	}
-	catch (exception ex)
+	catch (Bad_Request_Ex ex)
 	{
 		throw Server::Exception(ex.what()); //kafie?
 	}
-	res->setHeader("Location", "/homepage");
+	catch (Permission_Denied_Ex ex)
+	{
+		throw Server::Exception(ex.what()); //kafie?
+	}
+	res->setHeader("Location", "/home");
 	return res;
 }
 
 map<string, string> GetFilm::handle(Request *req)
 {
 	map<string, string> context;
-	int film_id = stoi(req->getQueryParam("film_id"));
- 	// string newName = "I am " + req->getQueryParam("name");
-  	context["name"] = "test";
-  	// context["color"] = req->getQueryParam("color");
+	try
+	{
+		int film_id = stoi(req->getQueryParam("film_id"));
+		context = net->get_details(film_id);
+	}
+	catch (Not_Found_Ex ex)
+	{
+		throw Server::Exception(ex.what()); //kafie?
+	}
+	catch (Permission_Denied_Ex ex)
+	{
+		throw Server::Exception(ex.what()); //kafie?
+	}
   	return context;
 }

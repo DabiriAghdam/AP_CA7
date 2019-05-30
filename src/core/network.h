@@ -5,7 +5,6 @@
 #include "film_repository.h"
 #include "user_repository.h"
 #include "http_server.h"
-// #include "commands_handler.h"
 
 #define PORT 5000
 #define LOW 5
@@ -26,14 +25,13 @@ protected:
     UserRepository user_repository;
     FilmRepository film_repository;
     HttpServer http_server;
-    // CommandsHandler commands_handler;
 
     void check_logged_in();
     void check_user_access();
     float get_percent(int film_id);
     void print_film_details(Film* film);
-    void print_film_comments(Film* film);
     void print_recommended_films(Film* film);
+    void print_film_comments(Film* film);
     bool logged_in();
     bool is_admin();
 public:
@@ -54,7 +52,7 @@ public:
     void get_followers();
     void follow(int publisher_id);
     void inc_money(int value);
-    void get_details(int film_id);
+    std::map<std::string, std::string> get_details(int film_id);
     void buy_film(int film_id);
     void rate_film(int film_id, int score);
     void find_films(std::map<std::string, std::string> filters);

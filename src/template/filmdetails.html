@@ -4,9 +4,26 @@
     <title>Film Details</title>
   </head>
   <body>
-  <h1> Film Details </h1>
+  <h2> Details of Film <% cout << context["name"]; %></h2>
+  
+  <h4>Director: <% cout << context["director"]; %></h4>
+  <h4>Summary: <% cout << context["summary"]; %></h4>
+  <h4>Length: <% cout << context["length"]; %></h4>
+  <h4>Year: <% cout << context["year"]; %></h4>
+  <h4>Rate: <% cout << context["rate"]; %></h4>
+  <h4>Price: <% cout << context["price"]; %></h4>
+
+  <h2> Recommendations: </h2>
   <%
-    cout << context["name"] << endl;
+  for (int i = 0; i < stoi(context["recommended_size"]); i++)
+  {
+  %>  
+    <h4>Name: <% cout << context["name" + to_string(i)]; %></h4>
+    <h4>Director: <% cout << context["director" + to_string(i)]; %></h4>
+    <h4>Length: <% cout << context["length" + to_string(i)]; %></h4>
+    <a href = '<% cout  << "/filmdetails?film_id=" << context["id" + to_string(i)]; %>'> link </a>
+  <%
+  }
   %>
   <a href = "/logout" > Logout </a>
   </body>

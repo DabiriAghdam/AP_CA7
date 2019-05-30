@@ -23,7 +23,7 @@ Network::Network() : http_server(PORT)// commands_handler(this)
 
 void Network::initialize_handlers()
 {
-    http_server.setNotFoundErrPage("static/404.html");
+    http_server.setNotFoundErrPage("src/static/404.html");
     // http_server.get("/", new ShowPage("static/home.html"));
     http_server.post("/signup", new SignUpHandler(this));
     http_server.get("/signup", new ShowPage("src/static/signup.html"));
@@ -39,14 +39,13 @@ void Network::initialize_handlers()
 
 void Network::start()
 {
-    // commands_handler.run();
     try 
     {
         http_server.run();
     } 
     catch (Server::Exception e) 
     {
-        cerr << e.getMessage() << endl;//are?
+        cerr << e.getMessage() << endl;
     }
 }
 
@@ -267,10 +266,10 @@ void Network::inc_money(int value)
 
 void Network::print_film_details(Film* film)
 {
-    cout << "Details of Film " << film->get_name() << endl << "Id = " << film->get_id() << endl
-    << "Director = " << film->get_director() << endl << "Length = " << film->get_length() << endl 
-    << "Year = " << film->get_year() << endl << "Summary = " << film->get_summary() << endl
-    << "Rate = "<< setprecision(2) << film->get_score() << endl << "Price = " << film->get_price() << endl;
+    cout << "Details of Film " << film->get_name() << "\nId = " << film->get_id()
+        << "\nDirector = " << film->get_director() << "\nLength = " << film->get_length() 
+        << "\nYear = " << film->get_year() << "\nSummary = " << film->get_summary()
+        << "\nRate = "<< setprecision(2) << film->get_score() << "\nPrice = " << film->get_price() << endl;
 }
 
 void Network::print_film_comments(Film* film)
@@ -287,7 +286,7 @@ void Network::print_film_comments(Film* film)
 }
 
 void Network::print_recommended_films(Film* film)
-{
+{;
     vector<Film*> recommended = film_repository.get_recommendations(film, logged_in_user);
     cout << endl << "Recommendation Film" << endl
          << "#. Film Id | Film Name | Film Length | Film Director" << endl;
@@ -298,7 +297,7 @@ void Network::print_recommended_films(Film* film)
     }
 }
 
-void Network::get_details(int film_id)
+map<string, string> Network::get_details(int film_id)
 {
     if (is_admin())
         throw Bad_Request_Ex();
@@ -306,9 +305,28 @@ void Network::get_details(int film_id)
     Film* film = film_repository.find(film_id);
     if (film == NULL || !film->is_published())
         throw Not_Found_Ex();
-    print_film_details(film);
-    print_film_comments(film);
-    print_recommended_films(film);
+    map<string, string> context;
+    context["name"] = film->get_name();
+    context["director"] = film->get_director();
+    context["summary"] = film->get_summary();
+    context["length"] = to_string(film->get_length());
+    context["year"] =to_string(film->get_year());
+    context["price"] = to_string(film->get_price());
+    context["rate"] = to_string(film->get_score());
+
+    vector<Film*> recommended = film_repository.get_recommendations(film, logged_in_user);
+    context["recommended_size"] = to_string(recommended.size());
+    for (int i = 0; i < recommended.size(); i++)
+    {
+        context["name" + to_string(i)] = recommended[i]->get_name();
+        context["director" + to_string(i)] = recommended[i]->get_director();
+        context["length" + to_string(i)] = to_string(recommended[i]->get_length());
+        context["id" + to_string(i)] = to_string(recommended[i]->get_id());
+    }
+    return context;
+    // print_film_details(film);
+    // print_film_comments(film);
+    // print_recommended_films(film);
 }
 
 void Network::buy_film(int film_id)
