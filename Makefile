@@ -6,7 +6,6 @@ EXECUTABLE_FILE = network.out
 OBJECTS = \
 	$(BUILD_DIR)/main.o \
 	$(BUILD_DIR)/network.o \
-	$(BUILD_DIR)/commands_handler.o \
 	$(BUILD_DIR)/customer.o \
 	$(BUILD_DIR)/publisher.o \
 	$(BUILD_DIR)/user_repository.o \
@@ -77,14 +76,11 @@ $(BUILD_DIR)/customer.o: $(SRC_DIR)/core/customer.cpp $(SRC_DIR)/core/customer.h
 $(BUILD_DIR)/user_repository.o: $(SRC_DIR)/core/user_repository.cpp $(SRC_DIR)/core/user_repository.h $(SRC_DIR)/core/customer.h
 	$(CC) -c $(SRC_DIR)/core/user_repository.cpp -o $(BUILD_DIR)/user_repository.o
 
-$(BUILD_DIR)/commands_handler.o: $(SRC_DIR)/core/commands_handler.cpp $(SRC_DIR)/core/commands_handler.h $(SRC_DIR)/core/exception.h
-	$(CC) -c $(SRC_DIR)/core/commands_handler.cpp -o $(BUILD_DIR)/commands_handler.o
-
 $(BUILD_DIR)/handlers.o: $(SRC_DIR)/core/handlers.cpp $(SRC_DIR)/server/server.hpp $(SRC_DIR)/utils/utilities.hpp $(SRC_DIR)/utils/response.hpp $(SRC_DIR)/utils/request.hpp $(SRC_DIR)/utils/include.hpp
 	$(CC) $(CF) -c  $(SRC_DIR)/core/handlers.cpp -o $(BUILD_DIR)/handlers.o
 
 $(BUILD_DIR)/network.o: $(SRC_DIR)/core/network.cpp $(SRC_DIR)/core/network.h $(SRC_DIR)/core/publisher.h \
-$(SRC_DIR)/core/film_repository.h $(SRC_DIR)/core/user_repository.h $(SRC_DIR)/core/commands_handler.h
+$(SRC_DIR)/core/film_repository.h $(SRC_DIR)/core/user_repository.h
 	$(CC) -c $(SRC_DIR)/core/network.cpp -o $(BUILD_DIR)/network.o
 
 $(BUILD_DIR)/http_server.o: $(SRC_DIR)/core/http_server.cpp $(SRC_DIR)/server/server.hpp $(SRC_DIR)/utils/utilities.hpp $(SRC_DIR)/utils/response.hpp $(SRC_DIR)/utils/request.hpp $(SRC_DIR)/utils/include.hpp
