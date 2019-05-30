@@ -23,15 +23,18 @@ Network::Network() : http_server(PORT)// commands_handler(this)
 
 void Network::initialize_handlers()
 {
-    http_server.post("/signup", new SignUp());
-    http_server.get("/signupform", new ShowPage("src/static/signupform.html"));
-    http_server.post("/login", new Login());
-    http_server.get("/loginform", new ShowPage("src/static/loginform.html"));
-    http_server.get("/addfilmform", new ShowPage("src/static/addfilmform.html"));
-    http_server.post("/addfilm", new AddFilm());
-    http_server.get("/homepage", new ShowPage("src/static/homepage.html"));
-    http_server.get("/profilepage", new ShowPage("src/static/profile.html"));
-    http_server.get("/filmdetails", new ShowPage("src/static/filmdetails.html"));
+    http_server.setNotFoundErrPage("static/404.html");
+    // http_server.get("/", new ShowPage("static/home.html"));
+    http_server.post("/signup", new SignUpHandler(this));
+    http_server.get("/signup", new ShowPage("src/static/signup.html"));
+    http_server.post("/login", new LoginHandler(this));
+    http_server.get("/login", new ShowPage("src/static/login.html"));
+    http_server.get("/addfilm", new ShowPage("src/static/addfilm.html"));
+    http_server.post("/addfilm", new AddFilm(this));
+    http_server.get("/home", new ShowPage("src/static/home.html"));
+    http_server.get("/profile", new ShowPage("src/static/profile.html"));
+    http_server.get("/filmdetails", new GetFilm(this, "src/template/filmdetails.html"));
+    http_server.get("/logout", new LogoutHandler(this));
 }
 
 void Network::start()
@@ -58,7 +61,7 @@ void Network::logout()
     logged_in_user = NULL;
 }
 
-void Network::signup(string email, string username, string password, int age, bool publisher)
+int Network::signup(string email, string username, string password, int age, bool publisher)
 {
     Customer* exist = user_repository.find(username);
     if (logged_in() || exist || !is_valid_email(email))
@@ -79,16 +82,17 @@ void Network::signup(string email, string username, string password, int age, bo
         user_repository.add(new_user);
     }
     logged_in_user = user_repository.find(id);
+    return id;
 }
 
-void Network::login(string username, string password)
+int Network::login(string username, string password)
 {
     Customer* user = user_repository.find(username);
     string hashed_pass = md5(password);
     if (logged_in() || user == NULL || user->get_password() != hashed_pass)
         throw Bad_Request_Ex();
-    else 
-        logged_in_user = user;
+    logged_in_user = user;
+    return logged_in_user->get_id();
 }
 
 void Network::add_film(int year, int length, int price, string name, string summary, string director)

@@ -4,8 +4,8 @@
 #include "publisher.h"
 #include "film_repository.h"
 #include "user_repository.h"
-// #include "commands_handler.h"
 #include "http_server.h"
+// #include "commands_handler.h"
 
 #define PORT 5000
 #define LOW 5
@@ -21,6 +21,7 @@ class Network {
 protected:
     int revenue;
     Customer* logged_in_user;
+    // std::vector<Customer*> logged_in_users;
     std::map<int, int> publishers_revenue;
     UserRepository user_repository;
     FilmRepository film_repository;
@@ -40,8 +41,8 @@ public:
     void start();
     void initialize_handlers();
     void logout();
-    void signup(std::string email, std::string username, std::string password, int age, bool publisher);
-    void login(std::string username, std::string password);
+    int signup(std::string email, std::string username, std::string password, int age, bool publisher);
+    int login(std::string username, std::string password);
     void give_money();
     void get_money();
     void reply(int film_id, int comment_id, std::string content);

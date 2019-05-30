@@ -4,24 +4,46 @@
 #include "../server/server.hpp"
 #include <iostream>
 
-class Adder : public RequestHandler {
-public:
-  Response *callback(Request *);
-};
+class Network;
 
 class AddFilm : public RequestHandler {
+private:
+  	Network* net;
 public:
-  Response *callback(Request *);
+  	AddFilm(Network* _net);
+  	Response *callback(Request *);
 };
 
-class SignUp : public RequestHandler {
+class SignUpHandler : public RequestHandler {
+private:
+  	Network* net;
 public:
-  Response *callback(Request *);
+  	SignUpHandler(Network* _net);
+  	Response *callback(Request *);
 };
 
-class Login : public RequestHandler {
+class LoginHandler : public RequestHandler {
+private:
+  	Network* net;
 public:
-  Response *callback(Request *);
+  	LoginHandler(Network* _net);
+  	Response *callback(Request *);
+};
+
+class LogoutHandler : public RequestHandler {
+private:
+  	Network* net;
+public:
+  	LogoutHandler(Network* _net);
+  	Response *callback(Request *);
+};
+
+class GetFilm : public TemplateHandler  {
+private:
+  	Network* net;
+public:
+	GetFilm(Network* _net, std::string filePath);
+  	std::map<std::string, std::string> handle(Request *req);
 };
 
 #endif
