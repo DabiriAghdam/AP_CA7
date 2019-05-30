@@ -1,6 +1,7 @@
 CC := g++ -std=c++11
-SRC_DIR = src
-BUILD_DIR = build
+SRC_DIR=src
+BUILD_DIR=build
+TEMPLATE_DIR=.template
 EXECUTABLE_FILE = network.out
 OBJECTS = \
 	$(BUILD_DIR)/main.o \
@@ -20,6 +21,7 @@ OBJECTS = \
 	$(BUILD_DIR)/route.o \
 	$(BUILD_DIR)/handlers.o \
 	$(BUILD_DIR)/http_server.o \
+	$(BUILD_DIR)/template_parser.o \
 	$(BUILD_DIR)/md5.o 
 	
 all: $(BUILD_DIR) $(EXECUTABLE_FILE)
@@ -32,6 +34,10 @@ $(EXECUTABLE_FILE): $(OBJECTS)
 
 $(BUILD_DIR)/main.o: $(SRC_DIR)/core/main.cpp $(SRC_DIR)/core/network.h
 	$(CC) -c $(SRC_DIR)/core/main.cpp -o $(BUILD_DIR)/main.o
+
+$(BUILD_DIR)/template_parser.o: $(SRC_DIR)/utils/template_parser.cpp $(SRC_DIR)/utils/template_parser.hpp \
+$(SRC_DIR)/utils/request.cpp $(SRC_DIR)/utils/request.hpp $(SRC_DIR)/utils/utilities.hpp $(SRC_DIR)/utils/utilities.cpp
+	$(CC) $(CF) -c $(SRC_DIR)/utils/template_parser.cpp -o $(BUILD_DIR)/template_parser.o
 
 $(BUILD_DIR)/response.o: $(SRC_DIR)/utils/response.cpp $(SRC_DIR)/utils/response.hpp $(SRC_DIR)/utils/include.hpp
 	$(CC) $(CF) -c $(SRC_DIR)/utils/response.cpp -o $(BUILD_DIR)/response.o
@@ -89,4 +95,4 @@ $(BUILD_DIR)/md5.o: $(SRC_DIR)/core/md5.cpp $(SRC_DIR)/core/md5.h
 
 .PHONY: clean
 clean:
-	rm -rf $(BUILD_DIR) *.o *.out &> /dev/null
+	rm -rf $(BUILD_DIR) $(TEMPLATE_DIR) *.o *.out &> /dev/null
