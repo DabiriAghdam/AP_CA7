@@ -4,6 +4,13 @@
     <title>Profile</title>
   </head>
   <body>
+  <a href = "/logout" > Logout </a>
+  &nbsp<a href = "/home" > Home </a>
+  <h4>Money balance: <% cout << context["money"]; %></h4>
+  <form action="/addmoney" method="post">
+    <input name="money" type="number" placeholder="money" required/> <br/>
+    <button type="submit">increase money</button> <br>
+  </form>
   <h1> Your purchased films </h1>
   <%
   for (int i = 0; i < stoi(context["count"]); i++)
@@ -16,8 +23,7 @@
   <h4>Rate: <% cout << context["rate" + to_string(i)]; %></h4>
   <h4>Price: <% cout << context["price" + to_string(i)]; %></h4>
   <%
-  }   
+  } 
   %>
-<a href = "/logout" > Logout </a>
   </body>
 </html>
