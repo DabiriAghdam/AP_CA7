@@ -68,7 +68,7 @@ vector<Film*> FilmRepository::find(map<string, string> filters)
         else if (it->first == "price")
         {
             for (int i = 0; i < films.size(); i++)
-               if (films[i]->is_published() && films[i]->get_price() == stoi(it->second))
+               if (films[i]->is_published() && films[i]->get_price() <= stoi(it->second))
                 result.push_back(films[i]);
         }
         else if (it->first == "director")

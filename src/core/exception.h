@@ -3,9 +3,9 @@
 
 #include <exception>
 
-#define NOT_FOUND "Not Found\n"
-#define BAD_REQUEST "Bad Request\n"
-#define PERMISSION_DENIED "Permission Denied\n"
+#define NOT_FOUND "Not Found"
+#define BAD_REQUEST "Bad Request"
+#define PERMISSION_DENIED "Permission Denied"
 
 class Not_Found_Ex : public std::exception {
 public:
