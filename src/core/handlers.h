@@ -70,4 +70,20 @@ public:
   	Response *callback(Request *);
 };
 
+class DeleteFilm : public RequestHandler {
+private:
+  	Network* net;
+public:
+  	DeleteFilm(Network* _net);
+  	Response *callback(Request *);
+};
+
+class BuyFilm : public RequestHandler {
+private:
+  	Network* net;
+public:
+  	BuyFilm(Network* _net);
+  	Response *callback(Request *);
+};
+
 #endif

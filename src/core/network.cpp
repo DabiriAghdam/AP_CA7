@@ -28,14 +28,15 @@ Network::Network() : http_server(PORT)
 void Network::initialize_handlers()
 {
     http_server.setNotFoundErrPage("src/static/404.html");
-    // http_server.get("/", new ShowPage("static/home.html"));
     http_server.post("/signup", new SignUpHandler(this));
     http_server.get("/signup", new ShowPage("src/static/signup.html"));
+    http_server.get("/", new ShowPage("src/static/login.html")); //are?
     http_server.post("/login", new LoginHandler(this));
     http_server.get("/login", new ShowPage("src/static/login.html"));
     http_server.get("/addfilm", new ShowPage("src/static/addfilm.html"));
     http_server.post("/addfilm", new AddFilm(this));
-    // http_server.post("/detelefilm", new DeleteFilm(this));
+    http_server.get("/deletefilm", new DeleteFilm(this));
+    http_server.get("/buyfilm", new BuyFilm(this));
     http_server.post("/addmoney", new AddMoney(this));
     http_server.get("/home", new GetHome(this, "src/template/home.html"));
     http_server.get("/profile", new GetProfile(this, "src/template/profile.html"));
@@ -88,7 +89,6 @@ int Network::signup(int user_id, string email, string username, string password,
         Customer* new_user = new Customer(id, age, money, email, username, hashed_pass);
         user_repository.add(new_user);
     }
-    // logged_in_user = user_repository.find(id);
     logged_in_users.insert(pair<int, Customer*> (id, user_repository.find(id)));
     return id;
 }
@@ -99,8 +99,7 @@ int Network::login(int user_id, string username, string password)
     string hashed_pass = md5(password);
     if (logged_in(user_id) || user == NULL || user->get_password() != hashed_pass)
         throw Bad_Request_Ex();
-    logged_in_users.at(user->get_id()) = user;
-    // logged_in_user = user;
+    logged_in_users[user->get_id()] = user;
     return user->get_id();
 }
 
@@ -323,6 +322,7 @@ map<string, string> Network::get_details(int user_id, int film_id)
     context["year"] =to_string(film->get_year());
     context["price"] = to_string(film->get_price());
     context["rate"] = to_string(film->get_score());
+    context["id"] = to_string(film->get_id());
 
     vector<Film*> recommended = film_repository.get_recommendations(film, logged_in_users.at(user_id));
     context["count"] = to_string(recommended.size());
@@ -456,6 +456,7 @@ map<string, string> Network::get_home_films(int user_id)
         context["year" + to_string(i)] = to_string(result[i]->get_year());
         context["rate" + to_string(i)] = to_string(result[i]->get_score());
         context["price" + to_string(i)] = to_string(result[i]->get_price());
+        context["id" + to_string(i)] = to_string(result[i]->get_id());
     }
      if (logged_in_users.at(user_id)->get_type() == PUBLISHER)
      {

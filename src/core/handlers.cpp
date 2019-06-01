@@ -21,6 +21,10 @@ GetProfile::GetProfile(Network* _net, string filePath) : net(_net), TemplateHand
 
 AddMoney::AddMoney(Network* _net) : net(_net) {}
 
+DeleteFilm::DeleteFilm(Network* _net) : net(_net) {}
+
+BuyFilm::BuyFilm(Network* _net) : net(_net) {}
+
 Response* SignUpHandler::callback(Request *req) 
 {
 	if (req->getSessionId() != "")
@@ -244,5 +248,65 @@ Response* AddMoney::callback(Request *req)
 		throw Server::Exception(BAD_REQUEST); //kafie?
 	}
 	res->setHeader("Location", "/profile");
+	return res;
+}
+
+Response* DeleteFilm::callback(Request *req) 
+{
+	if (req->getSessionId() == "")
+		return Response::redirect("/login");
+
+	Response* res = new Response(303);
+	int film_id = stoi(req->getQueryParam("film_id"));
+	try
+	{
+		int session_id = -1;
+		if (req->getSessionId() != "")
+			session_id = stoi(req->getSessionId());
+		net->delete_film(session_id, film_id);
+	}
+	catch (Bad_Request_Ex ex)
+	{
+		throw Server::Exception(ex.what()); //kafie?
+	}
+	catch (Permission_Denied_Ex ex)
+	{
+		throw Server::Exception(ex.what()); //kafie?
+	}
+	catch (invalid_argument)
+	{
+		throw Server::Exception(BAD_REQUEST); //kafie?
+	}
+	res->setHeader("Location", "/home");
+	return res;
+}
+
+Response* BuyFilm::callback(Request *req) 
+{
+	if (req->getSessionId() == "")
+		return Response::redirect("/login");
+
+	Response* res = new Response(303);
+	int film_id = stoi(req->getQueryParam("film_id"));
+	try
+	{
+		int session_id = -1;
+		if (req->getSessionId() != "")
+			session_id = stoi(req->getSessionId());
+		net->buy_film(session_id, film_id);
+	}
+	catch (Bad_Request_Ex ex)
+	{
+		throw Server::Exception(ex.what()); //kafie?
+	}
+	catch (Permission_Denied_Ex ex)
+	{
+		throw Server::Exception(ex.what()); //kafie?
+	}
+	catch (invalid_argument)
+	{
+		throw Server::Exception(BAD_REQUEST); //kafie?
+	}
+	res->setHeader("Location", "/home");
 	return res;
 }

@@ -4,13 +4,16 @@
     <title>Home</title>
   </head>
   <body>
-  <a href = "/logout" > Logout </a>
-  &nbsp<a href = "/profile" > Home </a>  
-  <h1> published films </h1>
+  <a href="/logout" > Logout </a>&nbsp;
+  <a href="/profile" > Profile </a>  
   <%
   if (context["publisher"] == "yes")
   {
-    for (int i = 0; i < stoi(context["published_count"]); i++)
+  %>
+  <br><a href = "/addfilm" > Add new film </a>
+  <h1> published films </h1>
+  <%
+  for (int i = 0; i < stoi(context["published_count"]); i++)
   {
   %>
   <h3> Details of <% cout << context["published_name" + to_string(i)]; %></h3>
@@ -19,11 +22,10 @@
   <h4>Year: <% cout << context["published_year" + to_string(i)]; %></h4>
   <h4>Rate: <% cout << context["published_rate" + to_string(i)]; %></h4>
   <h4>Price: <% cout << context["published_price" + to_string(i)]; %></h4>
-  <a href = "/deletefilm?film_id=" <% cout << context["published_id" + to_string(i)]; %> </a>
+  <a href='/deletefilm?film_id=<% cout << context["published_id" + to_string(i)]; %>' > delete </a>
   <%
   }   
   %>
-  <a href = "/addfilm" > Add new film </a> <br>
   <%
   }   
   %>
@@ -33,12 +35,13 @@
   for (int i = 0; i < stoi(context["count"]); i++)
   {
   %>
-  <h3> Details of <% cout << context["name" + to_string(i)]; %></h3>
+  <h3>Details of <% cout << context["name" + to_string(i)]; %></h3>
   <h4>Director: <% cout << context["director" + to_string(i)]; %></h4>
   <h4>Length: <% cout << context["length" + to_string(i)]; %></h4>
   <h4>Year: <% cout << context["year" + to_string(i)]; %></h4>
   <h4>Rate: <% cout << context["rate" + to_string(i)]; %></h4>
   <h4>Price: <% cout << context["price" + to_string(i)]; %></h4>
+  <a href='/filmdetails?film_id=<% cout << context["id" + to_string(i)]; %>' > more details </a>
   <%
   }   
   %>
