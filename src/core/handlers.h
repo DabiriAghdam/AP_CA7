@@ -62,4 +62,12 @@ public:
   	std::map<std::string, std::string> handle(Request *req);
 };
 
+class AddMoney : public RequestHandler {
+private:
+  	Network* net;
+public:
+  	AddMoney(Network* _net);
+  	Response *callback(Request *);
+};
+
 #endif

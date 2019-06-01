@@ -15,10 +15,11 @@ LogoutHandler::LogoutHandler(Network* _net) : net(_net) {}
 
 GetFilm::GetFilm(Network* _net, string filePath) : net(_net), TemplateHandler(filePath) {}
 
-GetHome::GetHome(Network* _net, std::string filePath) : net(_net), TemplateHandler(filePath) {}
+GetHome::GetHome(Network* _net, string filePath) : net(_net), TemplateHandler(filePath) {}
 
 GetProfile::GetProfile(Network* _net, string filePath) : net(_net), TemplateHandler(filePath) {}
 
+AddMoney::AddMoney(Network* _net) : net(_net) {}
 
 Response* SignUpHandler::callback(Request *req) 
 {
@@ -169,8 +170,8 @@ map<string, string> GetHome::handle(Request *req)
 		int session_id = -1;
 		if (req->getSessionId() != "")
 			session_id = stoi(req->getSessionId());
-		map<string, string> filters;//director?!
-		context = net->get_films(session_id, filters);
+		// map<string, string> filters;//director?!
+		context = net->get_home_films(session_id);
 	}
 	catch (Bad_Request_Ex ex)
 	{
@@ -199,7 +200,7 @@ map<string, string> GetProfile::handle(Request *req)
 		if (req->getSessionId() != "")
 			session_id = stoi(req->getSessionId());
 		map<string, string> filters;//director?!
-		context = net->get_films(session_id, filters);
+		context = net->get_profile_films(session_id);
 	}
 	catch (Bad_Request_Ex ex)
 	{
@@ -214,4 +215,34 @@ map<string, string> GetProfile::handle(Request *req)
 		throw Server::Exception(BAD_REQUEST); //kafie?
 	}
   	return context;
+}
+
+Response* AddMoney::callback(Request *req) 
+{
+	if (req->getSessionId() == "")
+		return Response::redirect("/login");
+
+	Response* res = new Response(303);
+	int money = stoi(req->getBodyParam("money"));
+	try
+	{
+		int session_id = -1;
+		if (req->getSessionId() != "")
+			session_id = stoi(req->getSessionId());
+		net->inc_money(session_id, money);
+	}
+	catch (Bad_Request_Ex ex)
+	{
+		throw Server::Exception(ex.what()); //kafie?
+	}
+	catch (Permission_Denied_Ex ex)
+	{
+		throw Server::Exception(ex.what()); //kafie?
+	}
+	catch (invalid_argument)
+	{
+		throw Server::Exception(BAD_REQUEST); //kafie?
+	}
+	res->setHeader("Location", "/profile");
+	return res;
 }
