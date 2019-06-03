@@ -72,25 +72,25 @@ vector<Film*> Customer::get_purchased_films(map<string, string> filters)
         if (it->first == "name")
         {
             for (int i = 0; i < purchased_films.size(); i++)
-               if (purchased_films[i]->is_published() && purchased_films[i]->get_name() == it->second)
+               if (purchased_films[i]->get_name() == it->second)
                     result.push_back(purchased_films[i]);
         }
         else if (it->first == "min_rate")
         {
             for (int i = 0; i < purchased_films.size(); i++)
-               if (purchased_films[i]->is_published() && purchased_films[i]->get_score() >= stoi(it->second))
+               if (purchased_films[i]->get_score() >= stoi(it->second))
                     result.push_back(purchased_films[i]);
         }
         else if (it->first == "min_year")
         {
             for (int i = 0; i < purchased_films.size(); i++)
-               if (purchased_films[i]->is_published() && purchased_films[i]->get_year() >= stoi(it->second))
+               if (purchased_films[i]->get_year() >= stoi(it->second))
                     result.push_back(purchased_films[i]);
         }
         else if (it->first == "max_year")
         {
             for (int i = 0; i < purchased_films.size(); i++)
-               if (purchased_films[i]->is_published() && purchased_films[i]->get_year() <= stoi(it->second))
+               if (purchased_films[i]->get_year() <= stoi(it->second))
                {
                     vector<Film*>::iterator it = find(result.begin(), result.end(), purchased_films[i]);
                     if (it == result.end())
@@ -103,13 +103,13 @@ vector<Film*> Customer::get_purchased_films(map<string, string> filters)
         else if (it->first == "price")
         {
             for (int i = 0; i < purchased_films.size(); i++)
-               if (purchased_films[i]->is_published() && purchased_films[i]->get_price() == stoi(it->second))
+               if (purchased_films[i]->get_price() == stoi(it->second))
                     result.push_back(purchased_films[i]);
         }
         else if (it->first == "director")
         {
             for (int i = 0; i < purchased_films.size(); i++)
-               if (purchased_films[i]->is_published() && purchased_films[i]->get_director() == it->second)
+               if (purchased_films[i]->get_director() == it->second)
                     result.push_back(purchased_films[i]);
         }
         else
@@ -119,7 +119,7 @@ vector<Film*> Customer::get_purchased_films(map<string, string> filters)
     if (filters.size() == 0)
     {
         for (int i = 0; i < purchased_films.size(); i++)
-            if (purchased_films[i]->is_published())
+            if (purchased_films[i]->is_published() || 1)
                 result.push_back(purchased_films[i]);
     }
     return result;
