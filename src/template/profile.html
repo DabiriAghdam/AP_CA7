@@ -2,27 +2,84 @@
 <html>
   <head>
     <title>Profile</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-flat.css">
+    <link href="https://fonts.googleapis.com/css?family=Cabin:400,700" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
+        body{
+          font-family: 'Cabin', sans-serif; 
+          color:white;        
+        }
+
+        h2,h3,h4,div,a{
+          font-family: 'Cabin', sans-serif; 
+        }
+
         .checked {
-          color: orange;
+          color: gold;
+        }
+        
+        .slider {
+          -webkit-appearance: none;
+          height: 25px;
+          background: #d3d3d3;
+          outline: none;
+          opacity: 0.7;
+          -webkit-transition: .2s;
+          transition: opacity .2s;
+        }
+
+        .slider:hover {
+          opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 25px;
+          height: 25px;
+          background: #348498;
+          cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+          width: 25px;
+          height: 25px;
+          background: #348498;
+          cursor: pointer;
         }
     </style>
   </head>
-  <body>
-  <a href = "/logout" > Logout </a>
-  &nbsp<a href = "/home" > Home </a>
-  <h4>Money balance: <% cout << context["money"]; %></h4>
-  <form action="/addmoney" method="post">
-    <input name="money" type="number" placeholder="money" required/> <br/>
-    <button type="submit">increase money</button> <br>
-  </form>
-  <h1> Your purchased films </h1>
+  <body class="w3-flat-peter-river">
+      <div class="w3-bar w3-flat-midnight-blue">
+        <a class="w3-bar-item w3-button" href="/home" > Home </a>
+        <a class="w3-bar-item w3-flat-silver w3-button" href="/profile"> Profile</a>
+        <%
+        if (context["publisher"] == "yes")
+        {
+          %>
+          <a class="w3-button w3-bar-item" href="/addfilm" > Add new film </a>
+          <%
+        }
+        %>
+        <a class="w3-bar-item w3-button" href="/logout" > Logout </a>&nbsp;
+      </div>
+    <div class="w3-container w3-flat-wet-asphalt">      
+      <h2> Your purchased films </h2>
+      <h4>Money balance: <% cout << context["money"]; %></h4>
+      <form action="/addmoney" method="post">
+        <input name="money" type="number" placeholder="money" required/>
+        <button class="w3-button w3-blue w3-round w3-margin-left" type="submit">increase money</button>
+      </form>
+      <br>
+  </div>
   <%
   for (int i = 0; i < stoi(context["count"]); i++)
   {
   %>
-  <h3> Details of <% cout << context["name" + to_string(i)]; %></h3>
+  <div class="w3-container w3-flat-wet-asphalt">
+  <h3>Details of <% cout << context["name" + to_string(i)]; %></h3>
   <h4>Director: <% cout << context["director" + to_string(i)]; %></h4>
   <h4>Length: <% cout << context["length" + to_string(i)]; %></h4>
   <h4>Year: <% cout << context["year" + to_string(i)]; %></h4>
@@ -42,7 +99,8 @@
   }   
   %> 
   <h4>Price: <% cout << context["price" + to_string(i)]; %></h4>
-  <a href = '<% cout  << "/filmdetails?film_id=" << context["id" + to_string(i)]; %>'> more details </a>
+  <a class="w3-button w3-blue w3-margin-bottom w3-round" href='<% cout  << "/filmdetails?film_id=" << context["id" + to_string(i)]; %>'> more details </a>
+  </div>
   <%
   } 
   %>

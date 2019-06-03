@@ -2,14 +2,17 @@
 <html>
   <head>
     <title>SignUp</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-flat.css">
     <link href="https://fonts.googleapis.com/css?family=Cabin:400,700" rel="stylesheet">
     <style>
       body{
-        background-color: #004d61;
-      }
+          font-family: 'Cabin', sans-serif; 
+          color:white;        
+        }
+
       div{
         font-family: 'Cabin', sans-serif; 
-        background-color: #348498; 
         padding: 1%; 
         max-width: 300px; 
         border-radius: 3px;
@@ -37,7 +40,7 @@
         position: relative;
         padding-left: 35px;
         cursor: pointer;
-        font-size: 16px;
+        font-size: 16.5px;
         -webkit-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
@@ -93,9 +96,9 @@
       }
     </style>
   </head>
-  <body>
-      <div>
-      <h2>Signup</h2>
+  <body class="w3-flat-peter-river">
+      <br><div class="w3-flat-midnight-blue">
+      <h2 style="font-family: 'Cabin', sans-serif;">Signup</h2>
       <form action="/signup" method="post">
         <input name="email" type="text" placeholder="Email" required/> <br/>
         <input name="username" type="text" placeholder="Username" required/> <br/>
@@ -106,9 +109,9 @@
             Signup as publisher.<input name="publisher" type="checkbox"/> 
           <span class="checkmark"></span>
         </label>
-        <br/><button type="submit" class="button">SignUp</button>
-        <input type="reset" class="button"><br>
-        already have an account? <a href = "/login" >login here</a>
+        <br/><button type="submit" class="w3-button w3-blue w3-round w3-margin-bottom button">SignUp</button>
+        <input type="reset" class="w3-button w3-blue w3-round button"><br>
+        already have an account? &nbsp;<a href = "/login" >login here</a>
       </form>
     </div>
   </body>

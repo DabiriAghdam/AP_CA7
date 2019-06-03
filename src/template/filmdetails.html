@@ -2,15 +2,26 @@
 <html>
   <head>
     <title>Film Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-flat.css">
+    <link href="https://fonts.googleapis.com/css?family=Cabin:400,700" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
+        body{
+            font-family: 'Cabin', sans-serif; 
+            color:white;        
+          }
         .checked {
-          color: orange;
+          color: gold;
         }
         
+        h2, h3, h4{
+          font-family: 'Cabin', sans-serif; 
+        }
+
         .slider {
           -webkit-appearance: none;
-          width: 100%;
           height: 25px;
           background: #d3d3d3;
           outline: none;
@@ -28,23 +39,36 @@
           appearance: none;
           width: 25px;
           height: 25px;
-          background: #4CAF50;
+          background: dodgerblue;
           cursor: pointer;
         }
 
         .slider::-moz-range-thumb {
           width: 25px;
           height: 25px;
-          background: #4CAF50;
+          background: dodgerblue;
           cursor: pointer;
         }
     </style>
   </head>
-  <body>
-  <a href = "/logout" > Logout </a>&nbsp;
-  <a href = "/home" > Home </a>
+  <body class="w3-flat-peter-river">
+    <div class="w3-bar w3-flat-midnight-blue ">
+        <a class="w3-bar-item w3-button" href="/home" > Home </a>
+        <a class="w3-bar-item w3-button" href="/profile"> Profile</a>
+        <%
+        if (context["publisher"] == "yes")
+        {
+          %>
+          <a class="w3-button w3-bar-item" href="/addfilm" > Add new film </a>
+          <%
+        }
+        %>
+        <a class="w3-bar-item w3-button" href="/logout" > Logout </a>&nbsp;
+      </div>
+  <div class="w3-container w3-flat-wet-asphalt">  
   <h2> Details of Film <% cout << context["name"]; %></h2>
-  
+  </div>
+  <div class="w3-container w3-flat-wet-asphalt"">
   <h4>Director: <% cout << context["director"]; %></h4>
   <h4>Summary: <% cout << context["summary"]; %></h4>
   <h4>Length: <% cout << context["length"]; %></h4>
@@ -69,21 +93,25 @@
   if (context["purchased"] == "no")
   {
   %>
-    <a href='/buyfilm?film_id=<% cout << context["id"]; %>' > Purchase </a>
+    <a href='/buyfilm?film_id=<% cout << context["id"]; %>' class="w3-button w3-blue   w3-round w3-margin-bottom w3-margin-top" > Purchase </a>
   <%
   }
   else
   {
   %>
     <form action='/ratefilm' method="get">
-      Score: <input type="range" min="1" max="10" value="1" step = "1" class="slider" name="score">
+      Score: <input type="range" min="1" max="10" value='<% cout << stoi(context["rate"]); %>' step = "1" class="slider w3-margin-top" name="score">
       <input type="hidden" name="film_id" value='<% cout << context["id"]; %>' >
-      <button type="submit">Rate</button><br>
+      <button class="w3-button w3-blue w3-round w3-margin-bottom w3-margin-left" type="submit">Rate</button><br>
     </form>
   <%
   }
   %>
+  </div>
+  <div class="w3-container w3-flat-midnight-blue">  
   <h2> Recommendations: </h2>
+  </div>
+  <div class="w3-container w3-flat-wet-asphalt">
   <%
   for (int i = 0; i < stoi(context["count"]); i++)
   {
@@ -91,9 +119,10 @@
     <h4>Name: <% cout << context["name" + to_string(i)]; %></h4>
     <h4>Director: <% cout << context["director" + to_string(i)]; %></h4>
     <h4>Length: <% cout << context["length" + to_string(i)]; %></h4>
-    <a href = '<% cout  << "/filmdetails?film_id=" << context["id" + to_string(i)]; %>'> more details </a>
+    <a class="w3-button w3-blue w3-round w3-margin-bottom" href='<% cout  << "/filmdetails?film_id=" << context["id" + to_string(i)]; %>'> more details </a>
   <%
   }
   %>
+  </div>
   </body>
 </html>
