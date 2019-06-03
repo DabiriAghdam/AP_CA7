@@ -433,21 +433,21 @@ map<string, string> Network::get_profile_films(int user_id)
     if (is_admin(user_id))
         throw Bad_Request_Ex();
     check_logged_in(user_id);
-    map<string, string> filters;//director?!
+    map<string, string> filters;
     return get_purchased_films(user_id, filters);
 }
 
 
-map<string, string> Network::get_home_films(int user_id)
+map<string, string> Network::get_home_films(int user_id, string director)
 {
     if (is_admin(user_id))
         throw Bad_Request_Ex();
     check_logged_in(user_id);
-    map<string, string> filters;//director?!
+    map<string, string> filters;
+    map<string, string> context;
 	filters["price"] = to_string(logged_in_users.at(user_id)->get_money());
     vector<Film*> result = film_repository.find(filters);
-     map<string, string> context;
-     context["count"] = to_string(result.size());
+    context["count"] = to_string(result.size());
     for (int i = 0; i < result.size(); i++)
     {
         context["name" + to_string(i)] = result[i]->get_name();
@@ -461,8 +461,14 @@ map<string, string> Network::get_home_films(int user_id)
      if (logged_in_users.at(user_id)->get_type() == PUBLISHER)
      {
         context["publisher"] = "yes";
-        filters.clear();//director?  
-        vector<Film*> result = ((Publisher*)logged_in_users.at(user_id))->get_published_films(filters);
+        context["director_name"] = "all directors";
+        map<string, string> filter;
+        if (director != "")
+        {
+            filter["director"] = director;
+            context["director_name"] = "director " + director;
+        }
+        result = ((Publisher*)logged_in_users.at(user_id))->get_published_films(filter);
         context["published_count"] = to_string(result.size());
         for (int i = 0; i < result.size(); i++)
         {
@@ -477,8 +483,7 @@ map<string, string> Network::get_home_films(int user_id)
      }
     else
         context["publisher"] = "no";
-
-    return context;
+return context;
 }
 
  map<string, string> Network::get_purchased_films(int user_id, map<string, string> filters)

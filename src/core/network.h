@@ -57,7 +57,7 @@ public:
     void buy_film(int user_id, int film_id);
     void rate_film(int user_id, int film_id, int score);
     void find_films(int user_id, std::map<std::string, std::string> filters);
-    std::map<std::string, std::string> get_home_films(int user_id);
+    std::map<std::string, std::string> get_home_films(int user_id, std::string director);
     std::map<std::string, std::string> get_profile_films(int user_id);
     void get_unread_notifications(int user_id);
     void get_all_notifications(int user_id, int limit);

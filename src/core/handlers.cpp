@@ -174,8 +174,8 @@ map<string, string> GetHome::handle(Request *req)
 		int session_id = -1;
 		if (req->getSessionId() != "")
 			session_id = stoi(req->getSessionId());
-		// map<string, string> filters;//director?!
-		context = net->get_home_films(session_id);
+		string director = req->getQueryParam("director");
+		context = net->get_home_films(session_id, director);
 	}
 	catch (Bad_Request_Ex ex)
 	{
