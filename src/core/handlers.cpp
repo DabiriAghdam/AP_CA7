@@ -25,6 +25,9 @@ DeleteFilm::DeleteFilm(Network* _net) : net(_net) {}
 
 BuyFilm::BuyFilm(Network* _net) : net(_net) {}
 
+RateFilm::RateFilm(Network* _net) : net(_net) {}
+
+
 Response* SignUpHandler::callback(Request *req) 
 {
 	if (req->getSessionId() != "")
@@ -287,13 +290,44 @@ Response* BuyFilm::callback(Request *req)
 		return Response::redirect("/login");
 
 	Response* res = new Response(303);
-	int film_id = stoi(req->getQueryParam("film_id"));
 	try
 	{
+		int film_id = stoi(req->getQueryParam("film_id"));
 		int session_id = -1;
 		if (req->getSessionId() != "")
 			session_id = stoi(req->getSessionId());
 		net->buy_film(session_id, film_id);
+	}
+	catch (Bad_Request_Ex ex)
+	{
+		throw Server::Exception(ex.what()); //kafie?
+	}
+	catch (Permission_Denied_Ex ex)
+	{
+		throw Server::Exception(ex.what()); //kafie?
+	}
+	catch (invalid_argument)
+	{
+		throw Server::Exception(BAD_REQUEST); //kafie?
+	}
+	res->setHeader("Location", "/home");
+	return res;
+}
+
+Response* RateFilm::callback(Request *req) 
+{
+	if (req->getSessionId() == "")
+		return Response::redirect("/login");
+
+	Response* res = new Response(303);
+	try
+	{
+		int film_id = stoi(req->getQueryParam("film_id"));
+		int score = stoi(req->getQueryParam("score"));
+		int session_id = -1;
+		if (req->getSessionId() != "")
+			session_id = stoi(req->getSessionId());
+		net->rate_film(session_id, film_id, score);
 	}
 	catch (Bad_Request_Ex ex)
 	{

@@ -37,6 +37,7 @@ void Network::initialize_handlers()
     http_server.post("/addfilm", new AddFilm(this));
     http_server.get("/deletefilm", new DeleteFilm(this));
     http_server.get("/buyfilm", new BuyFilm(this));
+    http_server.get("/ratefilm", new RateFilm(this));
     http_server.post("/addmoney", new AddMoney(this));
     http_server.get("/home", new GetHome(this, "src/template/home.html"));
     http_server.get("/profile", new GetProfile(this, "src/template/profile.html"));
@@ -323,7 +324,9 @@ map<string, string> Network::get_details(int user_id, int film_id)
     context["price"] = to_string(film->get_price());
     context["rate"] = to_string(film->get_score());
     context["id"] = to_string(film->get_id());
-
+    context["purchased"] = "no";
+    if (logged_in_users.at(user_id)->find_in_purchased_films(film_id) != NULL)
+        context["purchased"] = "yes";
     vector<Film*> recommended = film_repository.get_recommendations(film, logged_in_users.at(user_id));
     context["count"] = to_string(recommended.size());
     for (int i = 0; i < recommended.size(); i++)
@@ -492,7 +495,6 @@ return context;
         throw Bad_Request_Ex();
     check_logged_in(user_id);
     map<string, string> context;
-    // context["publisher"] = "no";
     vector<Film*> result = logged_in_users.at(user_id)->get_purchased_films(filters);
     context["money"] = to_string(logged_in_users.at(user_id)->get_money());
     context["count"] = to_string(result.size());
@@ -504,6 +506,7 @@ return context;
         context["year" + to_string(i)] = to_string(result[i]->get_year());
         context["rate" + to_string(i)] = to_string(result[i]->get_score());
         context["price" + to_string(i)] = to_string(result[i]->get_price());
+        context["id" + to_string(i)] = to_string(result[i]->get_id());
     }
     return context;
 }

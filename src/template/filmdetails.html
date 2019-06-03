@@ -4,8 +4,8 @@
     <title>Film Details</title>
   </head>
   <body>
-  <a href = "/logout" > Logout </a>
-  &nbsp<a href = "/home" > Home </a>
+  <a href = "/logout" > Logout </a>&nbsp;
+  <a href = "/home" > Home </a>
   <h2> Details of Film <% cout << context["name"]; %></h2>
   
   <h4>Director: <% cout << context["director"]; %></h4>
@@ -14,8 +14,24 @@
   <h4>Year: <% cout << context["year"]; %></h4>
   <h4>Rate: <% cout << context["rate"]; %></h4>
   <h4>Price: <% cout << context["price"]; %></h4>
-  <a href='/buyfilm?film_id=<% cout << context["id"]; %>' > buy </a>
-
+  <%
+  if (context["purchased"] == "no")
+  {
+  %>
+    <a href='/buyfilm?film_id=<% cout << context["id"]; %>' > Purchase </a>
+  <%
+  }
+  else
+  {
+  %>
+    <form action='/ratefilm' method="get">
+      Score: <input type="range" min="1" max="10" value="5" step = "1" name="score">
+      <input type="hidden" name="film_id" value='<% cout << context["id"]; %>' >
+      <button type="submit">Rate</button><br>
+    </form>
+  <%
+  }
+  %>
   <h2> Recommendations: </h2>
   <%
   for (int i = 0; i < stoi(context["count"]); i++)

@@ -86,4 +86,12 @@ public:
   	Response *callback(Request *);
 };
 
+class RateFilm : public RequestHandler {
+private:
+  	Network* net;
+public:
+  	RateFilm(Network* _net);
+  	Response *callback(Request *);
+};
+
 #endif
