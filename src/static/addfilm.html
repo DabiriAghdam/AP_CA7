@@ -2,18 +2,49 @@
 <html>
   <head>
     <title>Add Film</title>
+    <link href="https://fonts.googleapis.com/css?family=Cabin:400,700" rel="stylesheet">
+    <style>
+        body{
+          background-color: #004d61;
+        }
+        .div{
+          font-family: 'Cabin', sans-serif; 
+          background-color: #348498; 
+          padding: 1%; 
+          max-width: 300px; 
+          border-radius: 3px;
+          margin: auto;
+          text-align: center;
+        }
+        .input{
+          font-family: 'Cabin', sans-serif; 
+          display:block; 
+          margin: auto;
+          padding: 5px; 
+          width: 94%;
+        }
+        .button{
+          font-family: 'Cabin', sans-serif; 
+          display:block; 
+          width: 100%; 
+          padding: 7px;
+        }
+      </style>
   </head>
   <body>
-    <a href = "/logout" > Logout </a>    
+    <a href = "/logout" > Logout </a>
+    <div class="div">
+    <h2>Add new film</h2>
     <form action="/addfilm" method="post">
-      <input name="name" type="text" placeholder="Name" /> <br/>
-      <input name="price" type="number" placeholder="Price" /> <br/>
-      <input name="director" type="text" placeholder="Director" /> <br/>
-      <input name="length" type="number" placeholder="Length" /> <br/>
-      <input name="year" type="number" placeholder="Production Year" /> <br/>
-      <input name="summary" type="text" placeholder="Summary" /> <br/>
-      <button type="submit">Add</button>
-      <input type="reset">
+      <input name="name" type="text" placeholder="Name" class="input"  required/> <br/>
+      <input name="price" type="number" placeholder="Price" class="input"  required/> <br/>
+      <input name="director" type="text" placeholder="Director" class="input"  required/> <br/>
+      <input name="length" type="number" placeholder="Length" class="input"  required/> <br/>
+      <input name="year" type="number" placeholder="Production Year" class="input"  required/> <br/>
+      <input name="summary" type="text" placeholder="Summary" class="input"  required/> <br/>
+      <button type="submit" class="button">Add film</button>
+      <input type="reset" class="button">
     </form>
+   </div>  
   </body>
 </html>

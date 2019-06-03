@@ -2,6 +2,12 @@
 <html>
   <head>
     <title>Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .checked {
+          color: orange;
+        }
+    </style>
   </head>
   <body>
   <a href="/logout" > Logout </a>&nbsp;
@@ -10,11 +16,11 @@
   if (context["publisher"] == "yes")
   {
     %>
+    <a href = "/addfilm" > Add new film </a><br>
     <form action="/home" method="get">
-      director name to filter films:&nbsp;<input name="director" type="text" placeholder="Director name" />
+      director name to filter films: &nbsp;<input name="director" type="text" placeholder="Director name" />
       <button type="submit">Filter</button><br>
     </form>
-    <br><a href = "/addfilm" > Add new film </a>
     <h1> Your published films by <% cout << context["director_name"]; %></h1>
   <%
   for (int i = 0; i < stoi(context["published_count"]); i++)
@@ -24,17 +30,30 @@
   <h4>Director: <% cout << context["published_director" + to_string(i)]; %></h4>
   <h4>Length: <% cout << context["published_length" + to_string(i)]; %></h4>
   <h4>Year: <% cout << context["published_year" + to_string(i)]; %></h4>
-  <h4>Rate: <% cout << context["published_rate" + to_string(i)]; %></h4>
+  <h4>Rate: <% cout << stoi(context["published_rate" + to_string(i)]); %></h4>
+  <%
+  for (int j = 0; j < stoi(context["published_rate" + to_string(i)]) / 2; j++)
+  {
+  %>
+    <span class="fa fa-star checked"></span>
+  <%
+  }   
+  for (int j = 5 - stoi(context["published_rate" + to_string(i)]) / 2; j > 0; j--)
+  {
+  %>
+    <span class="fa fa-star"></span>
+  <%
+  }   
+  %>   
   <h4>Price: <% cout << context["published_price" + to_string(i)]; %></h4>
   <a href='/deletefilm?film_id=<% cout << context["published_id" + to_string(i)]; %>' > delete </a>
-  <%
+  <% 
   }   
   %>
   <%
   }   
   %>
-
-  <h1> films </h1>
+  <h1> films you can purchase</h1>
   <%
   for (int i = 0; i < stoi(context["count"]); i++)
   {
@@ -44,6 +63,20 @@
   <h4>Length: <% cout << context["length" + to_string(i)]; %></h4>
   <h4>Year: <% cout << context["year" + to_string(i)]; %></h4>
   <h4>Rate: <% cout << context["rate" + to_string(i)]; %></h4>
+  <%
+  for (int j = 0; j < stoi(context["rate" + to_string(i)]) / 2; j++)
+  {
+  %>
+    <span class="fa fa-star checked"></span>
+  <%
+  }   
+  for (int j = 5 - stoi(context["rate" + to_string(i)]) / 2; j > 0; j--)
+  {
+  %>
+    <span class="fa fa-star"></span>
+  <%
+  }   
+  %> 
   <h4>Price: <% cout << context["price" + to_string(i)]; %></h4>
   <a href='/filmdetails?film_id=<% cout << context["id" + to_string(i)]; %>' > more details </a>
   <%

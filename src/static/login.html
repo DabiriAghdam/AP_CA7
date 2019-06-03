@@ -2,13 +2,47 @@
 <html>
   <head>
     <title>Login</title>
+    <link href="https://fonts.googleapis.com/css?family=Cabin:400,700" rel="stylesheet">
+    <style>
+        body{
+          background-color: #004d61;
+        }
+
+        div{
+        font-family: 'Cabin', sans-serif; 
+        background-color: #348498; 
+        padding: 1%; 
+        max-width: 300px; 
+        border-radius: 3px;
+        margin: auto;
+        text-align: center;
+        }
+
+        input{
+          font-family: 'Cabin', sans-serif; 
+          display:block; 
+          margin: auto;
+          padding: 5px; 
+          width: 94%;
+        }
+
+        button{
+          font-family: 'Cabin', sans-serif; 
+          display:block; 
+          width: 100%; 
+          padding: 7px;
+        }
+      </style>
   </head>
   <body>
-    <form action="/login" method="post">
-      <input name="username" type="text" placeholder="Username" /> <br/>
-      <input name="password" type="password" placeholder="Password" /> <br/>
-      <button type="submit">Login</button><br>
-    </form>
-      don't have account? <a href = "/signup" >signup here</a>
-  </body>
+      <div>
+      <h2>Login</h2>
+      <form action="/login" method="post">
+        <input name="username" type="text" placeholder="Username" required/> <br/>
+        <input name="password" type="password" placeholder="Password" required/> <br/>
+        <button type="submit">Login</button><br>
+        don't have an account? <a href = "/signup" >signup here</a>
+      </form>
+    </div>
+    </body>
 </html>

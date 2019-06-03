@@ -2,6 +2,43 @@
 <html>
   <head>
     <title>Film Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .checked {
+          color: orange;
+        }
+        
+        .slider {
+          -webkit-appearance: none;
+          width: 100%;
+          height: 25px;
+          background: #d3d3d3;
+          outline: none;
+          opacity: 0.7;
+          -webkit-transition: .2s;
+          transition: opacity .2s;
+        }
+
+        .slider:hover {
+          opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 25px;
+          height: 25px;
+          background: #4CAF50;
+          cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+          width: 25px;
+          height: 25px;
+          background: #4CAF50;
+          cursor: pointer;
+        }
+    </style>
   </head>
   <body>
   <a href = "/logout" > Logout </a>&nbsp;
@@ -12,7 +49,21 @@
   <h4>Summary: <% cout << context["summary"]; %></h4>
   <h4>Length: <% cout << context["length"]; %></h4>
   <h4>Year: <% cout << context["year"]; %></h4>
-  <h4>Rate: <% cout << context["rate"]; %></h4>
+  <h4>Rate: <% cout << stoi(context["rate"]); %></h4>
+  <%
+  for (int j = 0; j < stoi(context["rate"]) / 2; j++)
+  {
+  %>
+    <span class="fa fa-star checked"></span>
+  <%
+  }   
+  for (int j = 5 - stoi(context["rate"]) / 2; j > 0; j--)
+  {
+  %>
+    <span class="fa fa-star"></span>
+  <%
+  }   
+  %> 
   <h4>Price: <% cout << context["price"]; %></h4>
   <%
   if (context["purchased"] == "no")
@@ -25,7 +76,7 @@
   {
   %>
     <form action='/ratefilm' method="get">
-      Score: <input type="range" min="1" max="10" value="5" step = "1" name="score">
+      Score: <input type="range" min="1" max="10" value="1" step = "1" class="slider" name="score">
       <input type="hidden" name="film_id" value='<% cout << context["id"]; %>' >
       <button type="submit">Rate</button><br>
     </form>
