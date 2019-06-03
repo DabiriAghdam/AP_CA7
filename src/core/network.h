@@ -40,7 +40,7 @@ public:
     void start();
     void initialize_handlers();
     void logout(int user_id);
-    int signup(int user_id, std::string email, std::string username, std::string password, int age, bool publisher);
+    int signup(int user_id, std::string email, std::string username, std::string password, std::string password_repeat, int age, bool publisher);
     int login(int user_id, std::string username, std::string password);
     void give_money(int user_id);
     void get_money(int user_id);

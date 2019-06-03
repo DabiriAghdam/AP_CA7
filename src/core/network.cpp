@@ -22,7 +22,7 @@ Network::Network() : http_server(PORT)
 { 
     revenue = 0;
     int age = -1;
-    signup(-1, ADMIN_EMAIL, ADMIN_USER, ADMIN_PASS, age, false);
+    signup(-1, ADMIN_EMAIL, ADMIN_USER, ADMIN_PASS, ADMIN_PASS, age, false);
 }
 
 void Network::initialize_handlers()
@@ -70,10 +70,10 @@ void Network::logout(int user_id)
     logged_in_users.erase(user_id);
 }
 
-int Network::signup(int user_id, string email, string username, string password, int age, bool publisher)
+int Network::signup(int user_id, string email, string username, string password, string password_repeat, int age, bool publisher)
 {
     Customer* exist = user_repository.find(username);
-    if (logged_in(user_id) || exist || !is_valid_email(email))
+    if (logged_in(user_id) || exist || !is_valid_email(email) || password != password_repeat)
         throw Bad_Request_Ex();
     
     string hashed_pass = md5(password);
@@ -449,17 +449,23 @@ map<string, string> Network::get_home_films(int user_id, string director)
     map<string, string> filters;
     map<string, string> context;
 	filters["price"] = to_string(logged_in_users.at(user_id)->get_money());
-    vector<Film*> result = film_repository.find(filters);
-    context["count"] = to_string(result.size());
-    for (int i = 0; i < result.size(); i++)
+    vector<Film*> results = film_repository.find(filters);
+    vector<Film*> not_purchased_results;
+    for (int i = 0; i < results.size(); i++)
     {
-        context["name" + to_string(i)] = result[i]->get_name();
-        context["director" + to_string(i)] = result[i]->get_director();
-        context["length" + to_string(i)] = to_string(result[i]->get_length());
-        context["year" + to_string(i)] = to_string(result[i]->get_year());
-        context["rate" + to_string(i)] = to_string(result[i]->get_score());
-        context["price" + to_string(i)] = to_string(result[i]->get_price());
-        context["id" + to_string(i)] = to_string(result[i]->get_id());
+        if (logged_in_users.at(user_id)->find_in_purchased_films(results[i]->get_id()) == NULL)
+            not_purchased_results.push_back(results[i]);
+    }
+    context["count"] = to_string(not_purchased_results.size());
+    for (int i = 0; i < not_purchased_results.size(); i++)
+    {
+        context["name" + to_string(i)] = not_purchased_results[i]->get_name();
+        context["director" + to_string(i)] = not_purchased_results[i]->get_director();
+        context["length" + to_string(i)] = to_string(not_purchased_results[i]->get_length());
+        context["year" + to_string(i)] = to_string(not_purchased_results[i]->get_year());
+        context["rate" + to_string(i)] = to_string(not_purchased_results[i]->get_score());
+        context["price" + to_string(i)] = to_string(not_purchased_results[i]->get_price());
+        context["id" + to_string(i)] = to_string(not_purchased_results[i]->get_id());
     }
      if (logged_in_users.at(user_id)->get_type() == PUBLISHER)
      {
@@ -471,17 +477,17 @@ map<string, string> Network::get_home_films(int user_id, string director)
             filter["director"] = director;
             context["director_name"] = "director " + director;
         }
-        result = ((Publisher*)logged_in_users.at(user_id))->get_published_films(filter);
-        context["published_count"] = to_string(result.size());
-        for (int i = 0; i < result.size(); i++)
+        results = ((Publisher*)logged_in_users.at(user_id))->get_published_films(filter);
+        context["published_count"] = to_string(results.size());
+        for (int i = 0; i < results.size(); i++)
         {
-            context["published_name" + to_string(i)] = result[i]->get_name();
-            context["published_director" + to_string(i)] = result[i]->get_director();
-            context["published_length" + to_string(i)] = to_string(result[i]->get_length());
-            context["published_year" + to_string(i)] = to_string(result[i]->get_year());
-            context["published_rate" + to_string(i)] = to_string(result[i]->get_score());
-            context["published_price" + to_string(i)] = to_string(result[i]->get_price());
-            context["published_id" + to_string(i)] = to_string(result[i]->get_id());
+            context["published_name" + to_string(i)] = results[i]->get_name();
+            context["published_director" + to_string(i)] = results[i]->get_director();
+            context["published_length" + to_string(i)] = to_string(results[i]->get_length());
+            context["published_year" + to_string(i)] = to_string(results[i]->get_year());
+            context["published_rate" + to_string(i)] = to_string(results[i]->get_score());
+            context["published_price" + to_string(i)] = to_string(results[i]->get_price());
+            context["published_id" + to_string(i)] = to_string(results[i]->get_id());
         }
      }
     else
@@ -518,7 +524,6 @@ map<string, string>  Network::get_published_films(int user_id, map<string, strin
     check_logged_in(user_id);
     check_user_access(user_id);
     map<string, string> context;
-    // context["publisher"] = "yes";
     vector<Film*> result = ((Publisher*)logged_in_users.at(user_id))->get_published_films(filters);
     context["count"] = to_string(result.size());
     for (int i = 0; i < result.size(); i++)

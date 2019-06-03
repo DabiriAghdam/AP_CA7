@@ -37,13 +37,14 @@ Response* SignUpHandler::callback(Request *req)
 	string email = req->getBodyParam("email");
 	string username = req->getBodyParam("username");
 	string password = req->getBodyParam("password");
+	string password_repeat = req->getBodyParam("password_repeat");
 	int age = stoi(req->getBodyParam("age"));
 	bool publisher = false;
 	if (req->getBodyParam("publisher") == "on")
 	publisher = true;
 	try
 	{
-		int id = net->signup(-1, email, username, password, age, publisher);
+		int id = net->signup(-1, email, username, password, password_repeat, age, publisher);
 		res->setSessionId(to_string(id));
 	}
 	catch (Bad_Request_Ex ex)
@@ -310,7 +311,7 @@ Response* BuyFilm::callback(Request *req)
 	{
 		throw Server::Exception(BAD_REQUEST); //kafie?
 	}
-	res->setHeader("Location", "/home");
+	res->setHeader("Location", "/filmdetails?film_id=" + req->getQueryParam("film_id"));
 	return res;
 }
 
