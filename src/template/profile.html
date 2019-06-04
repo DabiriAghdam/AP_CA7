@@ -12,7 +12,7 @@
           color:white;        
         }
 
-        h2,h3,h4,div,a{
+        h2, h3, h4{
           font-family: 'Cabin', sans-serif; 
         }
 
@@ -53,8 +53,8 @@
   </head>
   <body class="w3-flat-peter-river">
       <div class="w3-bar w3-flat-midnight-blue">
-        <a class="w3-bar-item w3-button" href="/home" > Home </a>
-        <a class="w3-bar-item w3-flat-silver w3-button" href="/profile"> Profile</a>
+        <a class="w3-bar-item w3-button" href="/home" ><i class="fa fa-home"> Home</i></a>
+        <a class="w3-bar-item w3-flat-silver w3-button" href="/profile"><i class="fa fa-user-circle"></i> Profile</a>
         <%
         if (context["publisher"] == "yes")
         {
@@ -70,7 +70,7 @@
       <h4>Money balance: <% cout << context["money"]; %></h4>
       <form action="/addmoney" method="post">
         <input name="money" type="number" placeholder="money" required/>
-        <button class="w3-button w3-blue w3-round w3-margin-left" type="submit">increase money</button>
+        <button class="w3-button w3-blue w3-round w3-margin-left" type="submit">Increase money</button>
       </form>
       <br>
   </div>
@@ -99,7 +99,7 @@
   }   
   %> 
   <h4>Price: <% cout << context["price" + to_string(i)]; %></h4>
-  <a class="w3-button w3-blue w3-margin-bottom w3-round" href='<% cout  << "/filmdetails?film_id=" << context["id" + to_string(i)]; %>'> more details </a>
+  <a class="w3-button w3-blue w3-margin-bottom w3-round" href='<% cout  << "/filmdetails?film_id=" << context["id" + to_string(i)]; %>'> More details <i class="fa fa-info-circle"></i></a>
   </div>
   <%
   } 

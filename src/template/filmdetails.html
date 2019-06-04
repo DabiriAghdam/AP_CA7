@@ -22,7 +22,8 @@
 
         .slider {
           -webkit-appearance: none;
-          height: 25px;
+          height: 15px;
+          border-radius: 5px;
           background: #d3d3d3;
           outline: none;
           opacity: 0.7;
@@ -39,6 +40,7 @@
           appearance: none;
           width: 25px;
           height: 25px;
+          border-radius: 50%;
           background: dodgerblue;
           cursor: pointer;
         }
@@ -46,6 +48,7 @@
         .slider::-moz-range-thumb {
           width: 25px;
           height: 25px;
+          border-radius: 50%;
           background: dodgerblue;
           cursor: pointer;
         }
@@ -53,8 +56,8 @@
   </head>
   <body class="w3-flat-peter-river">
     <div class="w3-bar w3-flat-midnight-blue ">
-        <a class="w3-bar-item w3-button" href="/home" > Home </a>
-        <a class="w3-bar-item w3-button" href="/profile"> Profile</a>
+        <a class="w3-bar-item w3-button" href="/home" ><i class="fa fa-home"></i> Home</a>
+        <a class="w3-bar-item w3-button" href="/profile"><i class="fa fa-user-circle"></i> Profile</a>
         <%
         if (context["publisher"] == "yes")
         {
@@ -66,7 +69,7 @@
         <a class="w3-bar-item w3-button" href="/logout" > Logout </a>&nbsp;
       </div>
   <div class="w3-container w3-flat-wet-asphalt">  
-  <h2> Details of Film <% cout << context["name"]; %></h2>
+  <h2><i class="fa fa-info-circle"></i>  Details of Film <% cout << context["name"]; %></h2>
   </div>
   <div class="w3-container w3-flat-wet-asphalt"">
   <h4>Director: <% cout << context["director"]; %></h4>
@@ -93,7 +96,7 @@
   if (context["purchased"] == "no")
   {
   %>
-    <a href='/buyfilm?film_id=<% cout << context["id"]; %>' class="w3-button w3-blue   w3-round w3-margin-bottom w3-margin-top" > Purchase </a>
+    <a href='/buyfilm?film_id=<% cout << context["id"]; %>' class="w3-button w3-blue   w3-round w3-margin-bottom w3-margin-top" >Purchase <i class="fa fa-shopping-cart"></i></a>
   <%
   }
   else if (context["purchased"] == "yes")
@@ -107,14 +110,14 @@
     <form action="/addcomment" method="POST" id="usrform">
       <input type="hidden" name="film_id" value='<% cout << context["id"]; %>' >
       <textarea rows="4" cols="50" name="comment" form="usrform" placeholder="Comment..." required></textarea>
-      <button class="w3-button w3-blue w3-round w3-margin-bottom w3-margin-left" type="submit">Add comment</button><br>
+      <button class="w3-button w3-blue w3-round w3-margin-bottom w3-margin-left" type="submit">Add comment <i class="fa fa-comment"></i></button><br>
     </form>
   <%
   }
   %>
   </div>
   <div class="w3-container w3-flat-midnight-blue">  
-    <h2> Comments: </h2>
+    <h2> <i class="fa fa-comments"></i> Comments: </h2>
     </div>
     <div class="w3-container w3-flat-wet-asphalt">
     <%
@@ -137,7 +140,7 @@
     <h4>Name: <% cout << context["name" + to_string(i)]; %></h4>
     <h4>Director: <% cout << context["director" + to_string(i)]; %></h4>
     <h4>Length: <% cout << context["length" + to_string(i)]; %></h4>
-    <a class="w3-button w3-blue w3-round w3-margin-bottom" href='<% cout  << "/filmdetails?film_id=" << context["id" + to_string(i)]; %>'> more details </a>
+    <a class="w3-button w3-blue w3-round w3-margin-bottom" href='<% cout  << "/filmdetails?film_id=" << context["id" + to_string(i)]; %>'> More details <i class="fa fa-info-circle"></i></a>
   <%
   }
   %>
