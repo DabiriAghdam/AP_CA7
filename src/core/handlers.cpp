@@ -125,7 +125,7 @@ Response* GetSignup::callback(Request *req)
 
 Response* LogoutHandler::callback(Request *req) 
 {
-	if (req->getSessionId() == "") //are?
+	if (req->getSessionId() == "")
 		return Response::redirect("/login");
 	
 	Response* res = new Response(303);
@@ -156,8 +156,8 @@ Response* LogoutHandler::callback(Request *req)
 
 Response* AddFilm::callback(Request *req) 
 {
-	if (req->getSessionId() == "")//are?
-		return Response::redirect("/login");
+	if (req->getSessionId() == "")
+		throw Server::Exception(PERMISSION_DENIED); 
 
 	Response* res = new Response(303);
 	string name = req->getBodyParam("name");
@@ -198,10 +198,8 @@ Response* AddFilm::callback(Request *req)
 Response* GetAddFilm::callback(Request *req) 
 {
 	if (req->getSessionId() == "")
-	{
-		Permission_Denied_Ex ex;
-		throw Server::Exception(ex.what());
-	}
+		throw Server::Exception(PERMISSION_DENIED);
+
 	Response *res = new Response;
 	try
 	{
@@ -319,8 +317,8 @@ map<string, string> GetProfile::handle(Request *req)
 
 Response* AddMoney::callback(Request *req) 
 {
-	if (req->getSessionId() == "")//are?
-		return Response::redirect("/login");
+	if (req->getSessionId() == "")
+		throw Server::Exception(PERMISSION_DENIED); 		
 
 	Response* res = new Response(303);
 	int money = stoi(req->getBodyParam("money"));
@@ -354,8 +352,8 @@ Response* AddMoney::callback(Request *req)
 
 Response* DeleteFilm::callback(Request *req) 
 {
-	if (req->getSessionId() == "")//are?
-		return Response::redirect("/login");
+	if (req->getSessionId() == "")
+		throw Server::Exception(PERMISSION_DENIED); 				
 
 	Response* res = new Response(303);
 	int film_id = stoi(req->getQueryParam("film_id"));
@@ -389,8 +387,8 @@ Response* DeleteFilm::callback(Request *req)
 
 Response* BuyFilm::callback(Request *req) 
 {
-	if (req->getSessionId() == "")//are?
-		return Response::redirect("/login");
+	if (req->getSessionId() == "")
+		throw Server::Exception(PERMISSION_DENIED); 						
 
 	Response* res = new Response(303);
 	try
@@ -424,8 +422,8 @@ Response* BuyFilm::callback(Request *req)
 
 Response* RateFilm::callback(Request *req) 
 {
-	if (req->getSessionId() == "")//are?
-		return Response::redirect("/login");
+	if (req->getSessionId() == "")
+		throw Server::Exception(PERMISSION_DENIED); 						
 
 	Response* res = new Response(303);
 	try
@@ -460,8 +458,8 @@ Response* RateFilm::callback(Request *req)
 
 Response* AddComment::callback(Request *req) 
 {
-	if (req->getSessionId() == "")  //are?
-		return Response::redirect("/login");
+	if (req->getSessionId() == "") 
+		throw Server::Exception(PERMISSION_DENIED); 				
 
 	Response* res = new Response(303);
 	try
