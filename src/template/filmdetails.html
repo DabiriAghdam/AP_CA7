@@ -96,24 +96,42 @@
     <a href='/buyfilm?film_id=<% cout << context["id"]; %>' class="w3-button w3-blue   w3-round w3-margin-bottom w3-margin-top" > Purchase </a>
   <%
   }
-  else
+  else if (context["purchased"] == "yes")
   {
   %>
-    <form action='/ratefilm' method="get">
+    <form action='/ratefilm' method="GET">
       Score: <input type="range" min="1" max="10" value='<% cout << stoi(context["rate"]); %>' step = "1" class="slider w3-margin-top" name="score">
       <input type="hidden" name="film_id" value='<% cout << context["id"]; %>' >
       <button class="w3-button w3-blue w3-round w3-margin-bottom w3-margin-left" type="submit">Rate</button><br>
+    </form>
+    <form action="/addcomment" method="POST" id="usrform">
+      <input type="hidden" name="film_id" value='<% cout << context["id"]; %>' >
+      <textarea rows="4" cols="50" name="comment" form="usrform" placeholder="Comment..." required></textarea>
+      <button class="w3-button w3-blue w3-round w3-margin-bottom w3-margin-left" type="submit">Add comment</button><br>
     </form>
   <%
   }
   %>
   </div>
   <div class="w3-container w3-flat-midnight-blue">  
+    <h2> Comments: </h2>
+    </div>
+    <div class="w3-container w3-flat-wet-asphalt">
+    <%
+    for (int i = 0; i < stoi(context["comments_count"]); i++)
+    {
+    %>  
+      <h4><% cout << "Comment " << i + 1 << ". " << context["comment" + to_string(i)]; %></h4>
+    <%
+    }
+    %>
+    </div>
+  <div class="w3-container w3-flat-midnight-blue">  
   <h2> Recommendations: </h2>
   </div>
   <div class="w3-container w3-flat-wet-asphalt">
   <%
-  for (int i = 0; i < stoi(context["count"]); i++)
+  for (int i = 0; i < stoi(context["recommended_count"]); i++)
   {
   %>  
     <h4>Name: <% cout << context["name" + to_string(i)]; %></h4>

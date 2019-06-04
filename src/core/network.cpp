@@ -40,6 +40,7 @@ void Network::initialize_handlers()
     http_server.get("/buyfilm", new BuyFilm(this));
     http_server.get("/ratefilm", new RateFilm(this));
     http_server.post("/addmoney", new AddMoney(this));
+    http_server.post("/addcomment", new AddComment(this));
     http_server.get("/home", new GetHome(this, "src/template/home.html"));
     http_server.get("/profile", new GetProfile(this, "src/template/profile.html"));
     http_server.get("/filmdetails", new GetFilm(this, "src/template/filmdetails.html"));
@@ -336,7 +337,7 @@ map<string, string> Network::get_details(int user_id, int film_id)
     if (logged_in_users.at(user_id)->find_in_purchased_films(film_id) != NULL)
         context["purchased"] = "yes";
     vector<Film*> recommended = film_repository.get_recommendations(film, logged_in_users.at(user_id));
-    context["count"] = to_string(recommended.size());
+    context["recommended_count"] = to_string(recommended.size());
     for (int i = 0; i < recommended.size(); i++)
     {
         context["name" + to_string(i)] = recommended[i]->get_name();
@@ -344,6 +345,11 @@ map<string, string> Network::get_details(int user_id, int film_id)
         context["length" + to_string(i)] = to_string(recommended[i]->get_length());
         context["id" + to_string(i)] = to_string(recommended[i]->get_id());
     }
+    vector<Comment*> comments  = film->get_all_comments();
+    context["comments_count"] = to_string(comments.size());
+    for (int i = 0; i < comments.size(); i++)
+        context["comment" + to_string(i)] = comments[i]->get_content();
+
     return context;
 }
 

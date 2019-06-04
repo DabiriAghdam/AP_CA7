@@ -118,4 +118,12 @@ public:
   	Response *callback(Request *);
 };
 
+class AddComment : public RequestHandler {
+private:
+  	Network* net;
+public:
+  	AddComment(Network* _net);
+  	Response *callback(Request *);
+};
+
 #endif

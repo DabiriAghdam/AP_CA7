@@ -47,7 +47,7 @@ public:
     void reply(int user_id, int film_id, int comment_id, std::string content);
     void delete_comment(int user_id, int film_id, int comment_id);
     void delete_film(int user_id, int film_id);
-    void add_comment(int user_id, int film_id, std::string);
+    void add_comment(int user_id, int film_id, std::string content);
     void edit_film(int user_id, int film_id, std::map<std::string, std::string> parameters);
     void add_film(int user_id, int year, int length, int price, std::string name, std::string summary, std::string director);
     void get_followers(int user_id);

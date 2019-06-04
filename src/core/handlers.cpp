@@ -33,6 +33,7 @@ BuyFilm::BuyFilm(Network* _net) : net(_net) {}
 
 RateFilm::RateFilm(Network* _net) : net(_net) {}
 
+AddComment::AddComment(Network* _net) : net(_net) {}
 
 Response* SignUpHandler::callback(Request *req) 
 {
@@ -124,7 +125,7 @@ Response* GetSignup::callback(Request *req)
 
 Response* LogoutHandler::callback(Request *req) 
 {
-	if (req->getSessionId() == "")
+	if (req->getSessionId() == "") //are?
 		return Response::redirect("/login");
 	
 	Response* res = new Response(303);
@@ -144,13 +145,18 @@ Response* LogoutHandler::callback(Request *req)
 	{
 		throw Server::Exception(BAD_REQUEST);
 	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+
   	res->setHeader("Location", "/login");
 	return res;
 }
 
 Response* AddFilm::callback(Request *req) 
 {
-	if (req->getSessionId() == "")
+	if (req->getSessionId() == "")//are?
 		return Response::redirect("/login");
 
 	Response* res = new Response(303);
@@ -179,6 +185,11 @@ Response* AddFilm::callback(Request *req)
 	{
 		throw Server::Exception(BAD_REQUEST); 
 	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+
 	res->setHeader("Location", "/home");
 	return res;
 }
@@ -204,6 +215,11 @@ Response* GetAddFilm::callback(Request *req)
 	{
 		throw Server::Exception(ex.what());
 	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+
   	return res;
 }
 
@@ -230,6 +246,11 @@ map<string, string> GetFilm::handle(Request *req)
 	{
 		throw Server::Exception(BAD_REQUEST);
 	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+
   	return context;
 }
 
@@ -257,6 +278,11 @@ map<string, string> GetHome::handle(Request *req)
 	{
 		throw Server::Exception(BAD_REQUEST);
 	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+
   	return context;
 }
 
@@ -283,12 +309,17 @@ map<string, string> GetProfile::handle(Request *req)
 	{
 		throw Server::Exception(BAD_REQUEST);
 	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+
   	return context;
 }
 
 Response* AddMoney::callback(Request *req) 
 {
-	if (req->getSessionId() == "")
+	if (req->getSessionId() == "")//are?
 		return Response::redirect("/login");
 
 	Response* res = new Response(303);
@@ -312,13 +343,18 @@ Response* AddMoney::callback(Request *req)
 	{
 		throw Server::Exception(BAD_REQUEST);
 	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+
 	res->setHeader("Location", "/profile");
 	return res;
 }
 
 Response* DeleteFilm::callback(Request *req) 
 {
-	if (req->getSessionId() == "")
+	if (req->getSessionId() == "")//are?
 		return Response::redirect("/login");
 
 	Response* res = new Response(303);
@@ -342,13 +378,18 @@ Response* DeleteFilm::callback(Request *req)
 	{
 		throw Server::Exception(BAD_REQUEST);
 	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+
 	res->setHeader("Location", "/home");
 	return res;
 }
 
 Response* BuyFilm::callback(Request *req) 
 {
-	if (req->getSessionId() == "")
+	if (req->getSessionId() == "")//are?
 		return Response::redirect("/login");
 
 	Response* res = new Response(303);
@@ -372,13 +413,18 @@ Response* BuyFilm::callback(Request *req)
 	{
 		throw Server::Exception(BAD_REQUEST);
 	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+
 	res->setHeader("Location", "/filmdetails?film_id=" + req->getQueryParam("film_id"));
 	return res;
 }
 
 Response* RateFilm::callback(Request *req) 
 {
-	if (req->getSessionId() == "")
+	if (req->getSessionId() == "")//are?
 		return Response::redirect("/login");
 
 	Response* res = new Response(303);
@@ -403,6 +449,47 @@ Response* RateFilm::callback(Request *req)
 	{
 		throw Server::Exception(BAD_REQUEST);
 	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+
 	res->setHeader("Location", "/filmdetails?film_id=" + req->getQueryParam("film_id"));
+	return res;
+}
+
+Response* AddComment::callback(Request *req) 
+{
+	if (req->getSessionId() == "")  //are?
+		return Response::redirect("/login");
+
+	Response* res = new Response(303);
+	try
+	{
+		int session_id = -1;
+		string content = req->getBodyParam("comment");
+		if (req->getSessionId() != "")
+			session_id = stoi(req->getSessionId());
+		int film_id = stoi(req->getBodyParam("film_id"));;
+		net->add_comment(session_id, film_id, content);
+	}
+	catch (Bad_Request_Ex ex)
+	{
+		throw Server::Exception(ex.what());
+	}
+	catch (Permission_Denied_Ex ex)
+	{
+		throw Server::Exception(ex.what());
+	}
+	catch (invalid_argument)
+	{
+		throw Server::Exception(BAD_REQUEST);
+	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+
+	res->setHeader("Location", "/filmdetails?film_id=" + req->getBodyParam("film_id"));
 	return res;
 }
