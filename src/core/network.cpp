@@ -450,8 +450,14 @@ map<string, string> Network::get_profile_films(int user_id)
     if (is_admin(user_id))
         throw Bad_Request_Ex();
     check_logged_in(user_id);
+    map<string, string> context;
     map<string, string> filters;
-    return get_purchased_films(user_id, filters);
+    context = get_purchased_films(user_id, filters);
+     if (logged_in_users.at(user_id)->get_type() == PUBLISHER)
+        context["publisher"] = "yes";
+    else
+        context["publisher"] = "no";
+    return context;
 }
 
 
