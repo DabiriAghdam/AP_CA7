@@ -22,4 +22,12 @@ public:
     const char * what () const throw () { return PERMISSION_DENIED; }
 };
 
+class Server_Ex : public std::exception {
+private:
+    std::string message;
+public:
+    Server_Ex(std::string msg) : message(msg) {}
+    const char * what () const throw () { return message.c_str(); }
+};
+
 #endif

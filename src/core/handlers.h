@@ -22,11 +22,27 @@ public:
   	Response *callback(Request *);
 };
 
+class GetSignup : public RequestHandler {
+private:
+  	Network* net;
+public:
+  	GetSignup(Network* _net);
+  	Response *callback(Request *);
+};
+
 class LoginHandler : public RequestHandler {
 private:
   	Network* net;
 public:
   	LoginHandler(Network* _net);
+  	Response *callback(Request *);
+};
+
+class GetLogin : public RequestHandler {
+private:
+  	Network* net;
+public:
+  	GetLogin(Network* _net);
   	Response *callback(Request *);
 };
 
@@ -44,6 +60,14 @@ private:
 public:
 	GetFilm(Network* _net, std::string filePath);
   	std::map<std::string, std::string> handle(Request *req);
+};
+
+class GetAddFilm : public RequestHandler {
+private:
+  	Network* net;
+public:
+  	GetAddFilm(Network* _net);
+  	Response *callback(Request *);
 };
 
 class GetHome : public TemplateHandler  {

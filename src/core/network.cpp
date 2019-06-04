@@ -29,11 +29,12 @@ void Network::initialize_handlers()
 {
     http_server.setNotFoundErrPage("src/static/404.html");
     http_server.post("/signup", new SignUpHandler(this));
-    http_server.get("/signup", new ShowPage("src/static/signup.html"));
-    http_server.get("/", new ShowPage("src/static/login.html")); //are?
+    http_server.get("/signup", new GetSignup(this));
+    http_server.get("/", new GetLogin(this));
     http_server.post("/login", new LoginHandler(this));
-    http_server.get("/login", new ShowPage("src/static/login.html"));
-    http_server.get("/addfilm", new ShowPage("src/static/addfilm.html"));
+    http_server.get("/login", new GetLogin(this));
+    http_server.get("/logout", new LogoutHandler(this));
+    http_server.get("/addfilm", new GetAddFilm(this));
     http_server.post("/addfilm", new AddFilm(this));
     http_server.get("/deletefilm", new DeleteFilm(this));
     http_server.get("/buyfilm", new BuyFilm(this));
@@ -42,13 +43,13 @@ void Network::initialize_handlers()
     http_server.get("/home", new GetHome(this, "src/template/home.html"));
     http_server.get("/profile", new GetProfile(this, "src/template/profile.html"));
     http_server.get("/filmdetails", new GetFilm(this, "src/template/filmdetails.html"));
-    http_server.get("/logout", new LogoutHandler(this));
 }
 
 void Network::start()
 {
     try 
     {
+        initialize_handlers();
         http_server.run();
     } 
     catch (Server::Exception e) 
@@ -72,10 +73,15 @@ void Network::logout(int user_id)
 
 int Network::signup(int user_id, string email, string username, string password, string password_repeat, int age, bool publisher)
 {
-    Customer* exist = user_repository.find(username);
-    if (logged_in(user_id) || exist || !is_valid_email(email) || password != password_repeat)
+    if (logged_in(user_id))
         throw Bad_Request_Ex();
-    
+    Customer* exist = user_repository.find(username);
+    if (exist)
+        throw Server_Ex("Username already exist");
+    else if (!is_valid_email(email))
+        throw Server_Ex("Invalid Email address");
+    else if (password != password_repeat)
+        throw Server_Ex("Passwords don't match");
     string hashed_pass = md5(password);
     int id = user_repository.get_users_count() + 1;
     int money = 0;
@@ -96,10 +102,12 @@ int Network::signup(int user_id, string email, string username, string password,
 
 int Network::login(int user_id, string username, string password)
 {
+    if (logged_in(user_id))
+        throw Bad_Request_Ex();
     Customer* user = user_repository.find(username);
     string hashed_pass = md5(password);
-    if (logged_in(user_id) || user == NULL || user->get_password() != hashed_pass)
-        throw Bad_Request_Ex();
+    if (user == NULL || user->get_password() != hashed_pass)
+        throw Server_Ex("Incorrect Username/Password");
     logged_in_users[user->get_id()] = user;
     return user->get_id();
 }

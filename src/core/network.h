@@ -25,23 +25,23 @@ protected:
     FilmRepository film_repository;
     HttpServer http_server;
 
-    void check_logged_in(int user_id);
-    void check_user_access(int user_id);
+    void initialize_handlers();
     float get_percent(int film_id);
     void print_film_details(Film* film);
     void print_recommended_films(int user_id, Film* film);
     void print_film_comments(Film* film);
-    bool logged_in(int user_id);
     bool is_admin(int user_id);
     std::map<std::string, std::string> get_published_films(int user_id, std::map<std::string, std::string> filters);
     std::map<std::string, std::string> get_purchased_films(int user_id, std::map<std::string, std::string> filters);
 public:
     Network();
     void start();
-    void initialize_handlers();
     void logout(int user_id);
     int signup(int user_id, std::string email, std::string username, std::string password, std::string password_repeat, int age, bool publisher);
     int login(int user_id, std::string username, std::string password);
+    bool logged_in(int user_id);
+    void check_logged_in(int user_id);
+    void check_user_access(int user_id);
     void give_money(int user_id);
     void get_money(int user_id);
     void reply(int user_id, int film_id, int comment_id, std::string content);

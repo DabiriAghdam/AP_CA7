@@ -13,7 +13,13 @@ LoginHandler::LoginHandler(Network* _net) : net(_net) {}
 
 LogoutHandler::LogoutHandler(Network* _net) : net(_net) {}
 
+GetSignup::GetSignup(Network* _net) : net(_net) {}
+
+GetLogin::GetLogin(Network* _net) : net(_net) {}
+
 GetFilm::GetFilm(Network* _net, string filePath) : net(_net), TemplateHandler(filePath) {}
+
+GetAddFilm::GetAddFilm(Network* _net) : net(_net) {}
 
 GetHome::GetHome(Network* _net, string filePath) : net(_net), TemplateHandler(filePath) {}
 
@@ -49,8 +55,13 @@ Response* SignUpHandler::callback(Request *req)
 	}
 	catch (Bad_Request_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+
 	res->setHeader("Location", "/home");
 	return res;
 }
@@ -70,10 +81,45 @@ Response* LoginHandler::callback(Request *req)
 	}
 	catch (Bad_Request_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
+	catch (Server_Ex ex)
+	{
+		throw Server::Exception(ex.what());		
+	}
+	
   	res->setHeader("Location", "/home");
 	return res;
+}
+
+Response* GetLogin::callback(Request *req) 
+{
+	if (req->getSessionId() != "")
+	{
+		int session_id = stoi(req->getSessionId());
+		if (net->logged_in(session_id))
+			return Response::redirect("/home");
+	}
+
+	Response *res = new Response;
+  	res->setHeader("Content-Type", "html");
+  	res->setBody(readFile("src/static/login.html"));
+  	return res;
+}
+
+Response* GetSignup::callback(Request *req) 
+{
+	if (req->getSessionId() != "")
+	{
+		int session_id = stoi(req->getSessionId());
+		if (net->logged_in(session_id))
+			return Response::redirect("/home");
+	}
+		
+	Response *res = new Response;
+  	res->setHeader("Content-Type", "html");
+  	res->setBody(readFile("src/static/signup.html"));
+  	return res;
 }
 
 Response* LogoutHandler::callback(Request *req) 
@@ -92,11 +138,11 @@ Response* LogoutHandler::callback(Request *req)
 	}
 	catch (Permission_Denied_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (invalid_argument)
 	{
-		throw Server::Exception(BAD_REQUEST); //kafie?
+		throw Server::Exception(BAD_REQUEST);
 	}
   	res->setHeader("Location", "/login");
 	return res;
@@ -123,25 +169,46 @@ Response* AddFilm::callback(Request *req)
 	}
 	catch (Bad_Request_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (Permission_Denied_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what()); 
 	}
 	catch (invalid_argument)
 	{
-		throw Server::Exception(BAD_REQUEST); //kafie?
+		throw Server::Exception(BAD_REQUEST); 
 	}
 	res->setHeader("Location", "/home");
 	return res;
 }
 
+
+Response* GetAddFilm::callback(Request *req) 
+{
+	if (req->getSessionId() == "")
+	{
+		Permission_Denied_Ex ex;
+		throw Server::Exception(ex.what());
+	}
+	Response *res = new Response;
+	try
+	{
+		int session_id = stoi(req->getSessionId());
+		net->check_logged_in(session_id);
+		net->check_user_access(session_id);
+  		res->setHeader("Content-Type", "html");
+  		res->setBody(readFile("src/static/addfilm.html"));
+	}
+	catch (Permission_Denied_Ex ex)
+	{
+		throw Server::Exception(ex.what());
+	}
+  	return res;
+}
+
 map<string, string> GetFilm::handle(Request *req)
 {
-	// if (req->getSessionId() == "") //chi kar konim?!
-	// 	return Response::redirect("/login");
-	
 	map<string, string> context;
 	try
 	{
@@ -153,25 +220,22 @@ map<string, string> GetFilm::handle(Request *req)
 	}
 	catch (Not_Found_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (Permission_Denied_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (invalid_argument)
 	{
-		throw Server::Exception(BAD_REQUEST); //kafie?
+		throw Server::Exception(BAD_REQUEST);
 	}
   	return context;
 }
 
 
 map<string, string> GetHome::handle(Request *req)
-{
-	// if (req->getSessionId() == "") //chi kar konim?!
-	// 	return Response::redirect("/login");
-	
+{	
 	map<string, string> context;
 	try
 	{
@@ -183,44 +247,41 @@ map<string, string> GetHome::handle(Request *req)
 	}
 	catch (Bad_Request_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (Permission_Denied_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (invalid_argument)
 	{
-		throw Server::Exception(BAD_REQUEST); //kafie?
+		throw Server::Exception(BAD_REQUEST);
 	}
   	return context;
 }
 
 map<string, string> GetProfile::handle(Request *req)
-{
-	// if (req->getSessionId() == "") //chi kar konim?!
-	// 	return Response::redirect("/login");
-	
+{	
 	map<string, string> context;
 	try
 	{
 		int session_id = -1;
 		if (req->getSessionId() != "")
 			session_id = stoi(req->getSessionId());
-		map<string, string> filters;//director?!
+		map<string, string> filters;
 		context = net->get_profile_films(session_id);
 	}
 	catch (Bad_Request_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (Permission_Denied_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (invalid_argument)
 	{
-		throw Server::Exception(BAD_REQUEST); //kafie?
+		throw Server::Exception(BAD_REQUEST);
 	}
   	return context;
 }
@@ -241,15 +302,15 @@ Response* AddMoney::callback(Request *req)
 	}
 	catch (Bad_Request_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (Permission_Denied_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (invalid_argument)
 	{
-		throw Server::Exception(BAD_REQUEST); //kafie?
+		throw Server::Exception(BAD_REQUEST);
 	}
 	res->setHeader("Location", "/profile");
 	return res;
@@ -271,15 +332,15 @@ Response* DeleteFilm::callback(Request *req)
 	}
 	catch (Bad_Request_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (Permission_Denied_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (invalid_argument)
 	{
-		throw Server::Exception(BAD_REQUEST); //kafie?
+		throw Server::Exception(BAD_REQUEST);
 	}
 	res->setHeader("Location", "/home");
 	return res;
@@ -301,15 +362,15 @@ Response* BuyFilm::callback(Request *req)
 	}
 	catch (Bad_Request_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (Permission_Denied_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (invalid_argument)
 	{
-		throw Server::Exception(BAD_REQUEST); //kafie?
+		throw Server::Exception(BAD_REQUEST);
 	}
 	res->setHeader("Location", "/filmdetails?film_id=" + req->getQueryParam("film_id"));
 	return res;
@@ -332,16 +393,16 @@ Response* RateFilm::callback(Request *req)
 	}
 	catch (Bad_Request_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (Permission_Denied_Ex ex)
 	{
-		throw Server::Exception(ex.what()); //kafie?
+		throw Server::Exception(ex.what());
 	}
 	catch (invalid_argument)
 	{
-		throw Server::Exception(BAD_REQUEST); //kafie?
+		throw Server::Exception(BAD_REQUEST);
 	}
-	res->setHeader("Location", "/home");
+	res->setHeader("Location", "/filmdetails?film_id=" + req->getQueryParam("film_id"));
 	return res;
 }
